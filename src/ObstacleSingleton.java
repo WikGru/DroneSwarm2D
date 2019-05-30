@@ -11,7 +11,7 @@ public class ObstacleSingleton {
         return single_instance;
     }
 
-    public ArrayList<Drone> obstacles;
+    public ArrayList<GridObject> obstacles;
 
     public ObstacleSingleton() {
         obstacles = new ArrayList<>();

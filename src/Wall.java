@@ -2,7 +2,7 @@ import java.awt.*;
 
 public class Wall implements GridObject {
     String type = "wall";
-    private Color col;
+    private Color col = Color.darkGray;
     private Point pos;
 
     public Wall(Point pos) {

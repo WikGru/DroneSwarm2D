@@ -44,6 +44,12 @@ public class App {
             gridTable.setValueAt(Color.green, drone.getFinishZone().getP1().getY(), drone.getFinishZone().getP1().getX());
         }
 
+        for (int i=0; i<8;i++){
+            Wall wall = new Wall(new Point(i+5,8));
+            s.obstacles.add(wall);
+            gridTable.setValueAt(wall.getCol(),wall.getPos().getY(),wall.getPos().getX());
+        }
+
 //        Drone drone = new Drone(12, Color.decode("#FF00FF"), new Point(4,10), new Point(10,10));
 //        Drone drone1 = new Drone(123, Color.decode("#FF00FF"), new Point(10,10), new Point(4,10));
 //                    s.obstacles.add(drone);
