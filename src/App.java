@@ -14,8 +14,9 @@ public class App {
     private ArrayList<Point> takenSpots = new ArrayList<>();
 
     public App() {
-        int windowSize = 700;
-        int gridSize = 40;
+        int windowSize = 500;
+        int gridSize = 15;
+        int droneAmount = 5;
 
         DefaultTableModel model = new DefaultTableModel(gridSize, gridSize);
         gridTable.setModel(model);
@@ -33,7 +34,7 @@ public class App {
         Random rand = new Random();
         Point start;
         Point finish;
-        for (int i = 0; i < 20; i++) {
+        for (int i = 0; i < droneAmount; i++) {
             start = new Point(rand.nextInt(gridSize - 1), rand.nextInt(gridSize - 1));
             finish = new Point(rand.nextInt(gridSize - 1), rand.nextInt(gridSize - 1));
             Drone drone = new Drone(12, Color.decode("#FF00FF"), start, finish);
@@ -55,48 +56,18 @@ public class App {
 
 
     private void nextStep() {
-        double trigger = Math.sqrt(2.0) / 2;
-        int x = 0;
-        int y = 0;
-        double ratio = 0;
-        Point diff;
         takenSpots = new ArrayList<>();
 
         for (Drone drone : droneList) {
             gridTable.setValueAt(Color.green, drone.getFinishZone().getP1().getY(), drone.getFinishZone().getP1().getX());
             gridTable.setValueAt(Color.decode("#ebebeb"), drone.getPos().getY(), drone.getPos().getX());
-            diff = drone.countDiff();
-
-
-            if (diff.getX() != 0) {
-                x = Math.abs(diff.getX()) / diff.getX();
-            }
-            if (diff.getY() != 0) {
-                y = Math.abs(diff.getY()) / diff.getY();
-            }
-
-            if (Math.abs(diff.getX()) >= Math.abs(diff.getY())) {
-                ratio = (double) diff.getY() / (double) diff.getX();
-                if (Math.abs(ratio) < trigger) {
-                    y = 0;
-                }
-            } else if (Math.abs(diff.getX()) < Math.abs(diff.getY())) {
-                ratio = (double) diff.getX() / (double) diff.getY();
-                if (Math.abs(ratio) < trigger) {
-                    x = 0;
-                }
-            }
-            if (diff.getY() == 0 && diff.getX() == 0) {
-                x = 0;
-                y = 0;
-            }
-            drone.move(new Point(x, y));
+            drone.countIntention();
             gridTable.setValueAt(drone.getCol(), drone.getPos().getY(), drone.getPos().getX());
 
             takenSpots.add(drone.getPos());
         }
 
-        manageCollisions();
+        //manageCollisions();
     }
 
     private void manageCollisions() {
@@ -120,7 +91,6 @@ public class App {
         for (Drone drone : dronesToDelete) {
             droneList.remove(drone);
             gridTable.setValueAt(Color.decode("#ebebeb"), drone.getPos().getY(), drone.getPos().getX());
-            System.out.println("Collision on spot: " + drone.getPos().getX() + "\t" + drone.getPos().getY());
         }
 
     }

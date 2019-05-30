@@ -8,16 +8,49 @@ public class Drone {
     private int nr;
     private Color col;
     private Point pos;
+    private Point intention;
     private Zone finishZone;
 
-    public Point countDiff(){
-        Point diff = new Point(getFinishZone().getP1().getX() - getPos().getX(),getFinishZone().getP1().getY() - getPos().getY());
-        return diff;
+    public Point countIntention() {
+        Point diff = new Point(getFinishZone().getP1().getX() - pos.getX(), getFinishZone().getP1().getY() - pos.getY());
+        int x = 0;
+        int y = 0;
+        double ratio;
+        double trigger = Math.sqrt(2) / 2;
+
+        if (diff.getX() != 0) {
+            x = Math.abs(diff.getX()) / diff.getX();
+        }
+        if (diff.getY() != 0) {
+            y = Math.abs(diff.getY()) / diff.getY();
+        }
+
+        if (Math.abs(diff.getX()) >= Math.abs(diff.getY())) {
+            ratio = (double) diff.getY() / (double) diff.getX();
+            if (Math.abs(ratio) < trigger) {
+                y = 0;
+            }
+        } else if (Math.abs(diff.getX()) < Math.abs(diff.getY())) {
+            ratio = (double) diff.getX() / (double) diff.getY();
+            if (Math.abs(ratio) < trigger) {
+                x = 0;
+            }
+        }
+        if (diff.getY() == 0 && diff.getX() == 0) {
+            x = 0;
+            y = 0;
+        }
+        move(new Point(x,y));
+        return new Point(x, y);
     }
 
     public Point move(Point dir) {
         this.pos = new Point(getPos().getX() + dir.getX(), getPos().getY() + dir.getY());
         return getPos();
+    }
+
+    public void manageCollisions(){
+        System.out.println("Collision on spot: " + pos.getX() + "\t" + pos.getY());
     }
 
     //From point to point
@@ -65,6 +98,14 @@ public class Drone {
 
     public Point getPos() {
         return pos;
+    }
+
+    public Point getIntention() {
+        return intention;
+    }
+
+    public void setIntention(Point intention) {
+        this.intention = intention;
     }
 
     public Zone getFinishZone() {
