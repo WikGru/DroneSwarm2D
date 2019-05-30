@@ -1,6 +1,7 @@
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Random;
 
@@ -10,7 +11,7 @@ public class App {
     private JPanel gridPanel;
     private JPanel userPanel;
     private JButton nextStepButton;
-    private ArrayList<Drone> droneList = new ArrayList<>();
+    private ObstacleSingleton s = ObstacleSingleton.getInstance();
     private ArrayList<Point> takenSpots = new ArrayList<>();
 
     public App() {
@@ -38,10 +39,16 @@ public class App {
             start = new Point(rand.nextInt(gridSize - 1), rand.nextInt(gridSize - 1));
             finish = new Point(rand.nextInt(gridSize - 1), rand.nextInt(gridSize - 1));
             Drone drone = new Drone(12, Color.decode("#FF00FF"), start, finish);
-            droneList.add(drone);
+            s.obstacles.add(drone);
             gridTable.setValueAt(drone.getCol(), drone.getPos().getY(), drone.getPos().getX());
             gridTable.setValueAt(Color.green, drone.getFinishZone().getP1().getY(), drone.getFinishZone().getP1().getX());
         }
+
+//        Drone drone = new Drone(12, Color.decode("#FF00FF"), new Point(4,10), new Point(10,10));
+//        Drone drone1 = new Drone(123, Color.decode("#FF00FF"), new Point(10,10), new Point(4,10));
+//                    s.obstacles.add(drone);
+//            s.obstacles.add(drone1);
+
     }
 
     public static void main(String[] args) {
@@ -56,42 +63,37 @@ public class App {
 
 
     private void nextStep() {
-        takenSpots = new ArrayList<>();
-
-        for (Drone drone : droneList) {
-            gridTable.setValueAt(Color.green, drone.getFinishZone().getP1().getY(), drone.getFinishZone().getP1().getX());
-            gridTable.setValueAt(Color.decode("#ebebeb"), drone.getPos().getY(), drone.getPos().getX());
-            drone.countIntention();
-            gridTable.setValueAt(drone.getCol(), drone.getPos().getY(), drone.getPos().getX());
-
-            takenSpots.add(drone.getPos());
-        }
-
-        //manageCollisions();
-    }
-
-    private void manageCollisions() {
-        ArrayList<Drone> dronesToDelete = new ArrayList<>();
-
-        //Same spot collision
-        for (Drone drone : droneList) {
-            int counter = 0;
-            for (Point spot : takenSpots) {
-                if (spot.getX() == drone.getPos().getX() && spot.getY() == drone.getPos().getY()) {
-                    counter++;
-                }
+        for (int x = 0; x < gridTable.getColumnCount() - 1; x++) {
+            for (int y = 0; y < gridTable.getRowCount() - 1; y++) {
+                gridTable.setValueAt(Color.decode("#ebebeb"), y, x);
             }
-            if (counter > 1) {
-                dronesToDelete.add(drone);
-            }
-
         }
-        //End of same spot collision
 
-        for (Drone drone : dronesToDelete) {
-            droneList.remove(drone);
-            gridTable.setValueAt(Color.decode("#ebebeb"), drone.getPos().getY(), drone.getPos().getX());
+        for (GridObject obj : s.obstacles) {
+            gridTable.setValueAt(Color.green, obj.getFinishZone().getP1().getY(), obj.getFinishZone().getP1().getX());
+            gridTable.setValueAt(Color.decode("#ebebeb"), obj.getPos().getY(), obj.getPos().getX());
+            obj.lookForObstacles();
+            obj.setIntention();
         }
+
+        for (GridObject obj : s.obstacles) {
+            obj.manageCollisions();
+        }
+
+        ArrayList<GridObject> toRemove = new ArrayList<>();
+        for (GridObject obj : s.obstacles) {
+            if (obj.isDead()) toRemove.add(obj);
+        }
+
+        for (GridObject obj : toRemove) {
+            s.obstacles.remove(obj);
+        }
+
+        for (GridObject obj : s.obstacles) {
+            obj.move();
+            gridTable.setValueAt(obj.getCol(), obj.getPos().getY(), obj.getPos().getX());
+        }
+
 
     }
 }
