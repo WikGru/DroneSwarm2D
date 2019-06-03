@@ -1,5 +1,5 @@
 import java.awt.*;
-
+//This class implements static objects with constant position on grid
 public class Wall implements GridObject {
     String type = "wall";
     private Color col = Color.darkGray;
@@ -15,8 +15,8 @@ public class Wall implements GridObject {
         return type;
     }
 
-    public int getNr() {
-        return 0;
+    public String getNr() {
+        return "";
     }
 
     public Color getCol() {

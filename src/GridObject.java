@@ -1,9 +1,9 @@
 import java.awt.*;
-import java.util.List;
 
+//This interface unites static with dynamic objects on grid.
 public interface GridObject {
     String getType();
-    int getNr();
+    String getNr();
     Color getCol();
     Point getPos();
     Point getIntention();

@@ -13,7 +13,12 @@ public class ButtonRenderer extends JButton implements TableCellRenderer {
     }
 
     public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
-        setBackground((Color) value);
+        Cell obj = (Cell) value;
+        if (obj == null) {
+            obj = new Cell();
+        }
+        setBackground(obj.getCol());
+        setText(obj.getId());
         return this;
     }
 }

@@ -1,13 +1,13 @@
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.Random;
-
+//This class implements Drones and their behaviour
 public class Drone implements GridObject {
     String type = "drone";
     private boolean isDead = false;
     private ArrayList<GridObject> obstaclesInRange = new ArrayList<>();
     private int range = 2;
-    private int nr;
+    private String getNr;
     private Color col;
     private Point pos;
     private Point intention = new Point(0, 0);
@@ -113,24 +113,24 @@ public class Drone implements GridObject {
     }
 
     //From point to point
-    public Drone(int nr, Color col, Point initPos, Point finishPos) {
-        this.nr = nr;
+    public Drone(String id, Color col, Point initPos, Point finishPos) {
+        this.getNr = id;
         this.col = col;
         this.pos = initPos;
         this.finishZone = new Zone(finishPos, finishPos);
     }
 
     //From point to zone
-    public Drone(int nr, Color col, Point initPos, Zone finishZone) {
-        this.nr = nr;
+    public Drone(String id, Color col, Point initPos, Zone finishZone) {
+        this.getNr = id;
         this.col = col;
         this.pos = initPos;
         this.finishZone = finishZone;
     }
 
     //From zone to zone
-    public Drone(int nr, Color col, Zone initZone, Zone finishZone) {
-        this.nr = nr;
+    public Drone(String id, Color col, Zone initZone, Zone finishZone) {
+        this.getNr = id;
         this.col = col;
         Random rand = new Random();
         int x = rand.nextInt(initZone.getP2().getX() - initZone.getP1().getX() + 1) + initZone.getP1().getX();
@@ -147,8 +147,8 @@ public class Drone implements GridObject {
         return col;
     }
 
-    public int getNr() {
-        return nr;
+    public String getNr() {
+        return getNr;
     }
 
     public Point getPos() {
