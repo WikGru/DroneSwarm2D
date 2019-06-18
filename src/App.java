@@ -1,16 +1,22 @@
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.Random;
 
 //This is the main App class used to run the simulation
 public class App {
+    private int stepCounter = 0;
+    private String dronesAlive = "";
     private JPanel mainPanel;
     private JTable gridTable;
     private JPanel gridPanel;
     private JPanel userPanel;
     private JButton nextStepButton;
+    private JTextPane logTextfield;
+    private JButton logClearButton;
     private ObstacleSingleton s = ObstacleSingleton.getInstance();
 
     public App() {
@@ -54,6 +60,12 @@ public class App {
             s.obstacles.add(wall);
             gridTable.setValueAt(new Cell("", wall.getCol()), wall.getPos().getY(), wall.getPos().getX());
         }
+        logClearButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                logTextfield.setText("");
+            }
+        });
     }
 
     public static void main(String[] args) {
@@ -69,6 +81,17 @@ public class App {
 
     //Handling next step
     private void nextStep() {
+        stepCounter++;
+
+        dronesAlive = "[";
+        for (GridObject obj : s.obstacles) {
+            if(obj.getType().equals("drone") && !obj.isDead()){
+                dronesAlive += obj.getNr() + ", ";
+            }
+        }
+        dronesAlive += "]";
+
+        logTextfield.setText(logTextfield.getText() + "Step: " + stepCounter + "\nDrones alive: " + dronesAlive + '\n');
         //Clearing grid
         for (int x = 0; x < gridTable.getColumnCount() - 1; x++) {
             for (int y = 0; y < gridTable.getRowCount() - 1; y++) {
