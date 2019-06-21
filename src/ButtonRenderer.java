@@ -6,7 +6,7 @@ import javax.swing.table.*;
  * @version 1.0 11/09/98
  */
 public class ButtonRenderer extends JButton implements TableCellRenderer {
-
+    //TODO: JButton nadaje kształt którąś metodą chyba
     public ButtonRenderer() {
         setBorderPainted(false);
         setOpaque(true);

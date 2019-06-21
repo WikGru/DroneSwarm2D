@@ -15,6 +15,7 @@ public class Drone implements GridObject {
     private ObstacleSingleton s = ObstacleSingleton.getInstance();
 
     public void setIntention() {
+        //TODO: zrób jako interfejs
         Point diff = new Point(getFinishZone().getP1().getX() - pos.getX(), getFinishZone().getP1().getY() - pos.getY());
         int x = 0;
         int y = 0;
@@ -63,6 +64,7 @@ public class Drone implements GridObject {
     }
 
     public void manageCollisions() {
+        //TODO: zasieg widzenia 2
         for (GridObject obj : obstaclesInRange) {
             Point objPosAfterMove = addPoints(obj.getPos(), obj.getIntention());
             Point myPosAfterMove = addPoints(getPos(), getIntention());

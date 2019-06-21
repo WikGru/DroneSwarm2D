@@ -40,8 +40,10 @@ public class App {
 
         //NextStep actionListener
         nextStepButton.addActionListener(e -> nextStep());
+        //ClearLog actionListener
+        logClearButton.addActionListener(e -> logTextfield.setText(""));
 
-        //Drone placement (by hand by now/ will be from file .JSON)
+        //TODO: Drone placement (by hand by now/ will be from file .JSON)
         Random rand = new Random();
         Point start;
         Point finish;
@@ -54,18 +56,12 @@ public class App {
             gridTable.setValueAt(new Cell(drone.getNr(), Color.green), drone.getFinishZone().getP1().getY(), drone.getFinishZone().getP1().getX());
         }
 
-        //Wall placement (by hand now/ will be from file .JSON)
+        //TODO: Wall placement (by hand now/ will be from file .JSON)
         for (int i = 0; i < 2; i++) {
             Wall wall = new Wall(new Point(i, 1));
             s.obstacles.add(wall);
             gridTable.setValueAt(new Cell("", wall.getCol()), wall.getPos().getY(), wall.getPos().getX());
         }
-        logClearButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                logTextfield.setText("");
-            }
-        });
     }
 
     public static void main(String[] args) {
@@ -109,6 +105,7 @@ public class App {
             gridTable.setValueAt(new Cell(), obj.getPos().getY(), obj.getPos().getX());
             obj.lookForObstacles();
             obj.setIntention();
+            //TODO: print active intention to log screeen & file
         }
 
         //Manage drone collisions
