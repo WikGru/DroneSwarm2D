@@ -1,3 +1,6 @@
+import scene.Point;
+import scene.Zone;
+
 import java.awt.*;
 
 //This interface unites static with dynamic objects on grid.
@@ -5,7 +8,7 @@ public interface GridObject {
     String getType();
     String getNr();
     Color getCol();
-    Point getPos();
+    scene.Point getPos();
     Point getIntention();
     void setIntention();
     void move();

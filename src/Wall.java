@@ -1,11 +1,14 @@
+import scene.Point;
+import scene.Zone;
+
 import java.awt.*;
 //This class implements static objects with constant position on grid
 public class Wall implements GridObject {
     String type = "wall";
     private Color col = Color.darkGray;
-    private Point pos;
+    private scene.Point pos;
 
-    public Wall(Point pos) {
+    public Wall(scene.Point pos) {
         this.col = Color.DARK_GRAY;
         this.pos = pos;
     }
@@ -23,13 +26,13 @@ public class Wall implements GridObject {
         return col;
     }
 
-    public Point getPos() {
+    public scene.Point getPos() {
         return pos;
     }
 
     @Override
-    public Point getIntention() {
-        return new Point(0,0);
+    public scene.Point getIntention() {
+        return new scene.Point(0,0);
     }
 
     @Override

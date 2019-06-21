@@ -1,8 +1,11 @@
+import scene.ButtonRenderer;
+import scene.Cell;
+import scene.Logger;
+import scene.Point;
+
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.Random;
 
@@ -17,6 +20,7 @@ public class App {
     private JButton nextStepButton;
     private JTextPane logTextfield;
     private JButton logClearButton;
+    private Logger log;
     private ObstacleSingleton s = ObstacleSingleton.getInstance();
 
     public App() {
@@ -26,6 +30,8 @@ public class App {
         int gridSize = 10;
         //Amount of placed drones on grid (all are magenta at the moment)
         int droneAmount = 5;
+        //Attach logDisplayField to Logger
+        log = new Logger(logTextfield);
 
         //Table size pre-set (rows and cols width and height)
         DefaultTableModel model = new DefaultTableModel(gridSize, gridSize);
@@ -41,15 +47,15 @@ public class App {
         //NextStep actionListener
         nextStepButton.addActionListener(e -> nextStep());
         //ClearLog actionListener
-        logClearButton.addActionListener(e -> logTextfield.setText(""));
+        logClearButton.addActionListener(e -> log.clearLogDisplay());
 
         //TODO: Drone placement (by hand by now/ will be from file .JSON)
         Random rand = new Random();
-        Point start;
-        Point finish;
+        scene.Point start;
+        scene.Point finish;
         for (int i = 0; i < droneAmount; i++) {
-            start = new Point(rand.nextInt(gridSize - 1), rand.nextInt(gridSize - 1));
-            finish = new Point(rand.nextInt(gridSize - 1), rand.nextInt(gridSize - 1));
+            start = new scene.Point(rand.nextInt(gridSize - 1), rand.nextInt(gridSize - 1));
+            finish = new scene.Point(rand.nextInt(gridSize - 1), rand.nextInt(gridSize - 1));
             Drone drone = new Drone("" + i, Color.decode("#FF00FF"), start, finish);
             s.obstacles.add(drone);
             gridTable.setValueAt(new Cell(drone.getNr(), drone.getCol()), drone.getPos().getY(), drone.getPos().getX());
@@ -81,13 +87,17 @@ public class App {
 
         dronesAlive = "[";
         for (GridObject obj : s.obstacles) {
-            if(obj.getType().equals("drone") && !obj.isDead()){
+            if (obj.getType().equals("drone") && !obj.isDead()) {
                 dronesAlive += obj.getNr() + ", ";
             }
         }
         dronesAlive += "]";
 
-        logTextfield.setText(logTextfield.getText() + "Step: " + stepCounter + "\nDrones alive: " + dronesAlive + '\n');
+        log.writeToLogDisplay("Step: " + stepCounter);
+        log.writeToLogDisplay("Drones alive: " + dronesAlive);
+
+        log.writeToLogFile("Step: " + stepCounter);
+        log.writeToLogFile("Drones alive: " + dronesAlive);
         //Clearing grid
         for (int x = 0; x < gridTable.getColumnCount() - 1; x++) {
             for (int y = 0; y < gridTable.getRowCount() - 1; y++) {
@@ -100,12 +110,18 @@ public class App {
             gridTable.setValueAt(new Cell(obj.getNr(), Color.green), obj.getFinishZone().getP1().getY(), obj.getFinishZone().getP1().getX());
         }
 
+        log.writeToLogDisplay("Intentions:");
+        log.writeToLogFile("Intentions:");
+
         //Input physical objects (Drones & Walls)
         for (GridObject obj : s.obstacles) {
             gridTable.setValueAt(new Cell(), obj.getPos().getY(), obj.getPos().getX());
             obj.lookForObstacles();
             obj.setIntention();
-            //TODO: print active intention to log screeen & file
+            if (obj.getType().equals("drone")) {
+                log.writeToLogDisplay(obj.getNr() + "  ->  [" + obj.getIntention().getX() + ", " + obj.getIntention().getY() + "]");
+                log.writeToLogFile(obj.getNr() + "  ->  [" + obj.getIntention().getX() + ", " + obj.getIntention().getY() + "]");
+            }
         }
 
         //Manage drone collisions

@@ -1,3 +1,5 @@
+package scene;
+
 public class Point {
     private int x;
     private int y;
@@ -7,7 +9,7 @@ public class Point {
         this.y = 0;
     }
 
-    Point(int x, int y){
+    public Point(int x, int y){
         this.x = x;
         this.y = y;
     }

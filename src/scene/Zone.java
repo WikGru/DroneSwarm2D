@@ -1,3 +1,5 @@
+package scene;
+
 public class Zone {
     private Point p1;
     private Point p2;

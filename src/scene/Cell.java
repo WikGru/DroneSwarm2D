@@ -1,5 +1,7 @@
+package scene;
+
 import java.awt.*;
-//This class is used to pass data to table as a Cell package
+//This class is used to pass data to table as a scene.Cell package
 public class Cell {
     private String id;
     private Color col;
