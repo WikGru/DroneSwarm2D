@@ -1,5 +1,7 @@
-import scene.Point;
-import scene.Zone;
+package com;
+
+import gui.Point;
+import gui.Zone;
 
 import java.awt.*;
 
@@ -8,7 +10,7 @@ public interface GridObject {
     String getType();
     String getNr();
     Color getCol();
-    scene.Point getPos();
+    Point getPos();
     Point getIntention();
     void setIntention();
     void move();

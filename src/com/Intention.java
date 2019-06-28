@@ -1,4 +1,6 @@
-import scene.Point;
+package com;
+
+import gui.Point;
 
 public class Intention {
     public Point setIntention(GridObject obj) {

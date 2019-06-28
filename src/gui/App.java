@@ -1,11 +1,18 @@
-import scene.ButtonRenderer;
-import scene.Cell;
-import scene.Logger;
-import scene.Point;
+package gui;
+
+import com.Drone;
+import com.GridObject;
+import com.ObstacleSingleton;
+import com.Wall;
+import org.json.JSONArray;
+import util.Logger;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.io.FileReader;
 import java.util.ArrayList;
 import java.util.Random;
 
@@ -20,14 +27,33 @@ public class App {
     private JButton nextStepButton;
     private JTextPane logTextfield;
     private JButton logClearButton;
+    private JButton resetButton;
     private Logger log;
     private ObstacleSingleton s = ObstacleSingleton.getInstance();
 
+    int windowSize = 0;
+    int gridSize = 1;
+
     public App() {
+        resetGrid();
+        //Reset actionListener
+        resetButton.addActionListener(e -> resetGrid());
+        //NextStep actionListener
+        nextStepButton.addActionListener(e -> nextStep());
+        //ClearLog actionListener
+        logClearButton.addActionListener(e -> log.clearLogDisplay());
+    }
+
+    private void readData(){
+//        JSONArray a
+    }
+
+    public void resetGrid() {
+        s.obstacles.clear();
         //Size of displayed window
-        int windowSize = 500;
+        windowSize = 500;
         //Amount of rows and cols
-        int gridSize = 10;
+        gridSize = 10;
         //Amount of placed drones on grid (all are magenta at the moment)
         int droneAmount = 5;
         //Attach logDisplayField to Logger
@@ -44,29 +70,27 @@ public class App {
         gridTable.setRowHeight(windowSize / gridSize);
 
 
-        //NextStep actionListener
-        nextStepButton.addActionListener(e -> nextStep());
-        //ClearLog actionListener
-        logClearButton.addActionListener(e -> log.clearLogDisplay());
 
-        //TODO: Drone placement (by hand by now/ will be from file .JSON)
+
+        //TODO: com.Drone placement (by hand by now/ will be from file .JSON)
         Random rand = new Random();
-        scene.Point start;
-        scene.Point finish;
+        Point start;
+        Point finish;
         for (int i = 0; i < droneAmount; i++) {
-            start = new scene.Point(rand.nextInt(gridSize - 1), rand.nextInt(gridSize - 1));
-            finish = new scene.Point(rand.nextInt(gridSize - 1), rand.nextInt(gridSize - 1));
+            start = new Point(rand.nextInt(gridSize - 1), rand.nextInt(gridSize - 1));
+            finish = new Point(rand.nextInt(gridSize - 1), rand.nextInt(gridSize - 1));
             Drone drone = new Drone("" + i, Color.decode("#FF00FF"), start, finish);
             s.obstacles.add(drone);
-            gridTable.setValueAt(new Cell(drone.getNr(), drone.getCol()), drone.getPos().getY(), drone.getPos().getX());
-            gridTable.setValueAt(new Cell(drone.getNr(), Color.green), drone.getFinishZone().getP1().getY(), drone.getFinishZone().getP1().getX());
+            gridTable.setValueAt(new Cell(drone.getType(), drone.getNr(), drone.getCol()), drone.getPos().getY(), drone.getPos().getX());
+            gridTable.setValueAt(new Cell("wall", drone.getNr(), Color.decode("#bcf7b5")), drone.getFinishZone().getP1().getY(), drone.getFinishZone().getP1().getX());
+
         }
 
-        //TODO: Wall placement (by hand now/ will be from file .JSON)
+        //TODO: com.Wall placement (by hand now/ will be from file .JSON)
         for (int i = 0; i < 2; i++) {
             Wall wall = new Wall(new Point(i, 1));
             s.obstacles.add(wall);
-            gridTable.setValueAt(new Cell("", wall.getCol()), wall.getPos().getY(), wall.getPos().getX());
+            gridTable.setValueAt(new Cell(wall.getType(), "", wall.getCol()), wall.getPos().getY(), wall.getPos().getX());
         }
     }
 
@@ -107,7 +131,7 @@ public class App {
 
         //Input finishZones
         for (GridObject obj : s.obstacles) {
-            gridTable.setValueAt(new Cell(obj.getNr(), Color.green), obj.getFinishZone().getP1().getY(), obj.getFinishZone().getP1().getX());
+            gridTable.setValueAt(new Cell("wall", obj.getNr(), Color.decode("#bcf7b5")), obj.getFinishZone().getP1().getY(), obj.getFinishZone().getP1().getX());
         }
 
         log.writeToLogDisplay("Intentions:");
@@ -141,7 +165,7 @@ public class App {
         //Move safe physical objects
         for (GridObject obj : s.obstacles) {
             obj.move();
-            gridTable.setValueAt(new Cell(obj.getNr(), obj.getCol()), obj.getPos().getY(), obj.getPos().getX());
+            gridTable.setValueAt(new Cell(obj.getType(), obj.getNr(), obj.getCol()), obj.getPos().getY(), obj.getPos().getX());
         }
     }
 }

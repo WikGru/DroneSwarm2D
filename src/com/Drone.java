@@ -1,5 +1,8 @@
-import scene.Point;
-import scene.Zone;
+package com;
+
+import gui.Point;
+import gui.Zone;
+import com.*;
 
 import java.awt.*;
 import java.util.ArrayList;
@@ -12,8 +15,8 @@ public class Drone implements GridObject {
     private int range = 2;
     private String getNr;
     private Color col;
-    private scene.Point pos;
-    private scene.Point intention = new scene.Point(0, 0);
+    private Point pos;
+    private Point intention = new Point(0, 0);
     //TODO: finishZone (or even Zone class) should be stored in List<Point> to scan if drone is in zone or not
     //TODO: might be easier to count center of zone using List<Point>
     private Zone finishZone;
@@ -21,7 +24,7 @@ public class Drone implements GridObject {
     private Intention intent = new Intention();
 
     public void move() {
-        this.pos = new scene.Point(getPos().getX() + intention.getX(), getPos().getY() + intention.getY());
+        this.pos = new Point(getPos().getX() + intention.getX(), getPos().getY() + intention.getY());
     }
 
     public void lookForObstacles() {
@@ -43,8 +46,8 @@ public class Drone implements GridObject {
     public void manageCollisions() {
         //Sight implemented as lookForObstacles (it makes drone see only in range of 2)
         for (GridObject obj : obstaclesInRange) {
-            scene.Point objPosAfterMove = addPoints(obj.getPos(), obj.getIntention());
-            scene.Point myPosAfterMove = addPoints(getPos(), getIntention());
+            Point objPosAfterMove = addPoints(obj.getPos(), obj.getIntention());
+            Point myPosAfterMove = addPoints(getPos(), getIntention());
             System.out.println("[" + myPosAfterMove.getX() + "," + myPosAfterMove.getY() + "]\tgot neighbour at\t[" + objPosAfterMove.getX() + "," + objPosAfterMove.getY() + "]");
 
 
@@ -83,7 +86,7 @@ public class Drone implements GridObject {
         }
     }
 
-    private void printCrossMidairData(GridObject obj, scene.Point objPosAfterMove, scene.Point myPosAfterMove) {
+    private void printCrossMidairData(GridObject obj, Point objPosAfterMove, Point myPosAfterMove) {
         System.out.println("Cross midair PRE: [" + pos.getX() + "," + pos.getY() + "]\t[" + obj.getPos().getX() + "," + obj.getPos().getY() + "]");
         System.out.println("Cross midair POST: [" + myPosAfterMove.getX() + "," + myPosAfterMove.getY() + "]\t[" + objPosAfterMove.getX() + "," + objPosAfterMove.getY() + "]");
         System.out.println("Intentions:\t[" + getIntention().getX() + ',' + getIntention().getY() + "]\t[" + obj.getIntention().getX() + ',' + obj.getIntention().getY() + ']');
@@ -92,7 +95,7 @@ public class Drone implements GridObject {
     }
 
     //From point to point
-    public Drone(String id, Color col, scene.Point initPos, scene.Point finishPos) {
+    public Drone(String id, Color col, Point initPos, Point finishPos) {
         this.getNr = id;
         this.col = col;
         this.pos = initPos;
@@ -100,7 +103,7 @@ public class Drone implements GridObject {
     }
 
     //From point to zone
-    public Drone(String id, Color col, scene.Point initPos, Zone finishZone) {
+    public Drone(String id, Color col, Point initPos, Zone finishZone) {
         this.getNr = id;
         this.col = col;
         this.pos = initPos;
@@ -114,7 +117,7 @@ public class Drone implements GridObject {
         Random rand = new Random();
         int x = rand.nextInt(initZone.getP2().getX() - initZone.getP1().getX() + 1) + initZone.getP1().getX();
         int y = rand.nextInt(initZone.getP2().getY() - initZone.getP1().getY() + 1) + initZone.getP1().getY();
-        this.pos = new scene.Point(x, y);
+        this.pos = new Point(x, y);
         this.finishZone = finishZone;
     }
 
@@ -130,11 +133,11 @@ public class Drone implements GridObject {
         return getNr;
     }
 
-    public scene.Point getPos() {
+    public Point getPos() {
         return pos;
     }
 
-    public scene.Point getIntention() {
+    public Point getIntention() {
         return intention;
     }
 
@@ -155,9 +158,9 @@ public class Drone implements GridObject {
         isDead = flag;
     }
 
-    public scene.Point addPoints(scene.Point p1, scene.Point p2) {
-        if (p1 == null) p1 = new scene.Point(0, 0);
-        if (p2 == null) p2 = new scene.Point(0, 0);
+    public Point addPoints(Point p1, Point p2) {
+        if (p1 == null) p1 = new Point(0, 0);
+        if (p2 == null) p2 = new Point(0, 0);
         return new Point(p1.getX() + p2.getX(), p1.getY() + p2.getY());
     }
 

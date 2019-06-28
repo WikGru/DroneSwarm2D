@@ -1,0 +1,105 @@
+[
+{
+  "type": "drone",
+  "id": "1",
+  "color": "#FF00FF",
+  "startingZone": {
+    "begin": {
+      "x": 5,
+      "y": 3
+    },
+    "end": {
+      "x": 5,
+      "y": 3
+    }
+  },
+  "finishZone": {
+    "begin": {
+      "x": 3,
+      "y": 5
+    },
+    "end": {
+      "x": 3,
+      "y": 5
+    }
+  }
+},
+
+{
+  "type": "drone",
+  "id": "2",
+  "color": "#FF00FF",
+  "startingZone": {
+    "begin": {
+      "x": 8,
+      "y": 3
+    },
+    "end": {
+      "x": 8,
+      "y": 3
+    }
+  },
+  "finishZone": {
+    "begin": {
+      "x": 4,
+      "y": 6
+    },
+    "end": {
+      "x": 4,
+      "y": 6
+    }
+  }
+},
+
+{
+  "type": "drone",
+  "id": "3",
+  "color": "#FF80FF",
+  "startingZone": {
+    "begin": {
+      "x": 0,
+      "y": 0
+    },
+    "end": {
+      "x": 0,
+      "y": 0
+    }
+  },
+  "finishZone": {
+    "begin": {
+      "x": 8,
+      "y": 0
+    },
+    "end": {
+      "x": 8,
+      "y": 0
+    }
+  }
+},
+
+{
+  "type": "drone",
+  "id": "4",
+  "color": "#FF00FF",
+  "startingZone": {
+    "begin": {
+      "x": 10,
+      "y": 0
+    },
+    "end": {
+      "x": 10,
+      "y": 0
+    }
+  },
+  "finishZone": {
+    "begin": {
+      "x": 10,
+      "y": 5
+    },
+    "end": {
+      "x": 10,
+      "y": 5
+    }
+  }
+}
+]

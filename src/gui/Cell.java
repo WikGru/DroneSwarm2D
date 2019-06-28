@@ -1,8 +1,9 @@
-package scene;
+package gui;
 
 import java.awt.*;
-//This class is used to pass data to table as a scene.Cell package
+//This class is used to pass data to table as a Cell package
 public class Cell {
+    private String type;
     private String id;
     private Color col;
 
@@ -11,9 +12,18 @@ public class Cell {
         this.col = Color.decode("#EBEBEB");
     }
 
-    public Cell(String id, Color col) {
+    public Cell(String type, String id, Color col) {
+        this.type = type;
         this.id = id;
         this.col = col;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
     }
 
     public String getId() {

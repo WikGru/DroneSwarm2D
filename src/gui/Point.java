@@ -1,4 +1,4 @@
-package scene;
+package gui;
 
 public class Point {
     private int x;
