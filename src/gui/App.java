@@ -5,21 +5,18 @@ import com.GridObject;
 import com.ObstacleSingleton;
 import com.Wall;
 import org.json.JSONArray;
+import org.json.JSONObject;
 import util.Logger;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.io.FileReader;
+import java.io.File;
 import java.util.ArrayList;
-import java.util.Random;
+import java.util.Scanner;
 
 //This is the main App class used to run the simulation
 public class App {
-    private int stepCounter = 0;
-    private String dronesAlive = "";
     private JPanel mainPanel;
     private JTable gridTable;
     private JPanel gridPanel;
@@ -28,13 +25,22 @@ public class App {
     private JTextPane logTextfield;
     private JButton logClearButton;
     private JButton resetButton;
+
+    private String dronesInput = "scenarioDrones.json";
+    private String obstaclesInput = "scenarioObstacles.json";
+    private String configInput = "config.json";
+    private int stepCounter = 0;
+    private String dronesAlive = "";
     private Logger log;
     private ObstacleSingleton s = ObstacleSingleton.getInstance();
 
-    int windowSize = 0;
-    int gridSize = 1;
+    private int windowSize = 0;
+    private int gridSize = 1;
 
     public App() {
+        //Attach logDisplayField to Logger
+        log = new Logger(logTextfield);
+
         resetGrid();
         //Reset actionListener
         resetButton.addActionListener(e -> resetGrid());
@@ -44,20 +50,81 @@ public class App {
         logClearButton.addActionListener(e -> log.clearLogDisplay());
     }
 
-    private void readData(){
-//        JSONArray a
+    private void loadConfig() {
+        try {
+            String myJson = new Scanner(new File(configInput)).useDelimiter("\\Z").next();
+            JSONObject obj = new JSONObject(myJson);
+            windowSize = obj.getInt("windowSize");
+            gridSize = obj.getInt("gridSize");
+        } catch (Exception e) {
+            log.writeToLogFile(Logger._msgType.ERR,"Could not read from config.json file");
+            e.printStackTrace();
+        }
+    }
+
+    private void loadScenario() {
+       loadDrones();
+       loadObstacles();
+    }
+
+    private void loadDrones(){
+        try {
+            String myJson = new Scanner(new File(dronesInput)).useDelimiter("\\Z").next();
+            JSONArray arr = new JSONArray(myJson);
+            for (Object obj : arr) {
+                JSONObject jObj = (JSONObject) obj;
+
+                int id = jObj.getInt("id");
+                String color = jObj.getString("color");
+                JSONObject startingZone = jObj.getJSONObject("startingZone");
+                JSONObject finishZone = jObj.getJSONObject("finishZone");
+
+                Point start = new Point(startingZone.getJSONObject("begin").getInt("x"),startingZone.getJSONObject("begin").getInt("y"));
+                Point finish = new Point(finishZone.getJSONObject("begin").getInt("x"),finishZone.getJSONObject("begin").getInt("y"));
+
+                Drone drone = new Drone("" + id, Color.decode(color), start, finish);
+                s.obstacles.add(drone);
+                gridTable.setValueAt(new Cell(drone.getType(), drone.getNr(), drone.getCol()), drone.getPos().getY(), drone.getPos().getX());
+                gridTable.setValueAt(new Cell("wall", drone.getNr(), Color.decode("#bcf7b5")), drone.getFinishZone().getP1().getY(), drone.getFinishZone().getP1().getX());
+
+            }
+        } catch (Exception e) {
+            log.writeToLogFile(Logger._msgType.ERR,"Could not read from scenarioDrones.json file");
+            e.printStackTrace();
+        }
+    }
+
+    private void loadObstacles(){
+        try {
+            String myJson = new Scanner(new File(obstaclesInput)).useDelimiter("\\Z").next();
+            JSONArray arr = new JSONArray(myJson);
+            for (Object obj : arr) {
+                JSONObject jObj = (JSONObject) obj;
+
+                Point point = new Point(jObj.getInt("x"),jObj.getInt("y"));
+
+                Wall obstacle = new Wall(point);
+
+                s.obstacles.add(obstacle);
+                gridTable.setValueAt(new Cell("wall", obstacle.getNr(), obstacle.getCol()), obstacle.getPos().getY(), obstacle.getPos().getX());
+            }
+        } catch (Exception e) {
+            log.writeToLogFile(Logger._msgType.ERR,"Could not read from scenarioObstacles.json file");
+            e.printStackTrace();
+        }
     }
 
     public void resetGrid() {
+        log.writeToLogFile(Logger._msgType.MSG,"");
+        log.writeToLogFile(Logger._msgType.MSG,"/--------------------------------------\\");
+        log.writeToLogFile(Logger._msgType.MSG,"\\----------New scenario start----------/");
+        stepCounter = 0;
         s.obstacles.clear();
-        //Size of displayed window
-        windowSize = 500;
-        //Amount of rows and cols
-        gridSize = 10;
-        //Amount of placed drones on grid (all are magenta at the moment)
-        int droneAmount = 5;
-        //Attach logDisplayField to Logger
-        log = new Logger(logTextfield);
+
+        //Reload config file
+        loadConfig();
+
+
 
         //Table size pre-set (rows and cols width and height)
         DefaultTableModel model = new DefaultTableModel(gridSize, gridSize);
@@ -69,29 +136,8 @@ public class App {
         }
         gridTable.setRowHeight(windowSize / gridSize);
 
-
-
-
-        //TODO: com.Drone placement (by hand by now/ will be from file .JSON)
-        Random rand = new Random();
-        Point start;
-        Point finish;
-        for (int i = 0; i < droneAmount; i++) {
-            start = new Point(rand.nextInt(gridSize - 1), rand.nextInt(gridSize - 1));
-            finish = new Point(rand.nextInt(gridSize - 1), rand.nextInt(gridSize - 1));
-            Drone drone = new Drone("" + i, Color.decode("#FF00FF"), start, finish);
-            s.obstacles.add(drone);
-            gridTable.setValueAt(new Cell(drone.getType(), drone.getNr(), drone.getCol()), drone.getPos().getY(), drone.getPos().getX());
-            gridTable.setValueAt(new Cell("wall", drone.getNr(), Color.decode("#bcf7b5")), drone.getFinishZone().getP1().getY(), drone.getFinishZone().getP1().getX());
-
-        }
-
-        //TODO: com.Wall placement (by hand now/ will be from file .JSON)
-        for (int i = 0; i < 2; i++) {
-            Wall wall = new Wall(new Point(i, 1));
-            s.obstacles.add(wall);
-            gridTable.setValueAt(new Cell(wall.getType(), "", wall.getCol()), wall.getPos().getY(), wall.getPos().getX());
-        }
+        //Reload scenario data
+        loadScenario();
     }
 
     public static void main(String[] args) {
@@ -120,8 +166,8 @@ public class App {
         log.writeToLogDisplay("Step: " + stepCounter);
         log.writeToLogDisplay("Drones alive: " + dronesAlive);
 
-        log.writeToLogFile("Step: " + stepCounter);
-        log.writeToLogFile("Drones alive: " + dronesAlive);
+        log.writeToLogFile(Logger._msgType.MSG,"STEP: " + stepCounter);
+        log.writeToLogFile(Logger._msgType.MSG,"Drones alive: " + dronesAlive);
         //Clearing grid
         for (int x = 0; x < gridTable.getColumnCount() - 1; x++) {
             for (int y = 0; y < gridTable.getRowCount() - 1; y++) {
@@ -135,7 +181,7 @@ public class App {
         }
 
         log.writeToLogDisplay("Intentions:");
-        log.writeToLogFile("Intentions:");
+        log.writeToLogFile(Logger._msgType.MSG, "Intentions:");
 
         //Input physical objects (Drones & Walls)
         for (GridObject obj : s.obstacles) {
@@ -144,7 +190,7 @@ public class App {
             obj.setIntention();
             if (obj.getType().equals("drone")) {
                 log.writeToLogDisplay(obj.getNr() + "  ->  [" + obj.getIntention().getX() + ", " + obj.getIntention().getY() + "]");
-                log.writeToLogFile(obj.getNr() + "  ->  [" + obj.getIntention().getX() + ", " + obj.getIntention().getY() + "]");
+                log.writeToLogFile(Logger._msgType.MSG,obj.getNr() + "  ->  [" + obj.getIntention().getX() + ", " + obj.getIntention().getY() + "]");
             }
         }
 

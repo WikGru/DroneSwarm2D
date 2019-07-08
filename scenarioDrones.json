@@ -1,8 +1,7 @@
 [
 {
-  "type": "drone",
   "id": "1",
-  "color": "#FF00FF",
+  "color": "#77FF23",
   "startingZone": {
     "begin": {
       "x": 5,
@@ -26,9 +25,8 @@
 },
 
 {
-  "type": "drone",
   "id": "2",
-  "color": "#FF00FF",
+  "color": "#00FFFF",
   "startingZone": {
     "begin": {
       "x": 8,
@@ -52,9 +50,8 @@
 },
 
 {
-  "type": "drone",
   "id": "3",
-  "color": "#FF80FF",
+  "color": "#FFFF00",
   "startingZone": {
     "begin": {
       "x": 0,
@@ -78,26 +75,25 @@
 },
 
 {
-  "type": "drone",
   "id": "4",
   "color": "#FF00FF",
   "startingZone": {
     "begin": {
-      "x": 10,
+      "x": 9,
       "y": 0
     },
     "end": {
-      "x": 10,
+      "x": 9,
       "y": 0
     }
   },
   "finishZone": {
     "begin": {
-      "x": 10,
+      "x": 9,
       "y": 5
     },
     "end": {
-      "x": 10,
+      "x": 9,
       "y": 5
     }
   }
