@@ -1,4 +1,4 @@
-package gui;
+package pl.edu.utp.gui;
 
 import java.awt.*;
 //This class is used to pass data to table as a Cell package
@@ -22,23 +22,12 @@ public class Cell {
         return type;
     }
 
-    public void setType(String type) {
-        this.type = type;
-    }
-
     public String getId() {
         return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
     }
 
     public Color getCol() {
         return col;
     }
 
-    public void setCol(Color col) {
-        this.col = col;
-    }
 }

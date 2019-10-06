@@ -1,14 +1,17 @@
-package com;
+package pl.edu.utp.com;
 
-import gui.Point;
-import gui.Zone;
-import com.*;
+import pl.edu.utp.gui.Point;
+import pl.edu.utp.gui.Zone;
+import pl.edu.utp.util.MyLogger;
 
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.Random;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 //This class implements Drones and their behaviour
-public class Drone implements GridObject {
+public class Drone extends Intention implements GridObject {
     String type = "drone";
     private boolean isDead = false;
     private ArrayList<GridObject> obstaclesInRange = new ArrayList<>();
@@ -16,46 +19,54 @@ public class Drone implements GridObject {
     private String getNr;
     private Color col;
     private Point pos;
-    private Point intention = new Point(0, 0);
-    //TODO: finishZone (or even Zone class) should be stored in List<Point> to scan if drone is in zone or not
-    //TODO: might be easier to count center of zone using List<Point>
+    private Point intention = new Point();
     private Zone finishZone;
     private ObstacleSingleton s = ObstacleSingleton.getInstance();
-    private Intention intent = new Intention();
+    private static final Logger LOGGER = Logger.getLogger(Drone.class.getName());
 
     public void move() {
         this.pos = new Point(getPos().getX() + intention.getX(), getPos().getY() + intention.getY());
     }
 
     public void lookForObstacles() {
+        int x1 = pos.getX() - range;
+        int x2 = pos.getX() + range;
+        int y1 = pos.getY() - range;
+        int y2 = pos.getY() + range;
+
         obstaclesInRange = new ArrayList<>();
-        for (int x = pos.getX() - range; x < pos.getX() + range; x++) {
-            for (int y = pos.getY() - range; y < pos.getY() + range; y++) {
-                if (x == pos.getX() && y == pos.getY()) continue;
-                for (GridObject obstacle : s.obstacles) {
-                    if (obstacle.getPos().getX() == x && obstacle.getPos().getY() == y) obstaclesInRange.add(obstacle);
-                }
+
+        StringBuilder log = new StringBuilder();
+        for (GridObject obstacle : s.obstacles) {
+            if (obstacle.getPos().getX() == pos.getX() && obstacle.getPos().getY() == pos.getY()) continue;
+            if (obstacle.getPos().getX() >= x1 && obstacle.getPos().getX() <= x2
+                    && obstacle.getPos().getY() >= y1 && obstacle.getPos().getY() <= y2) {
+                obstaclesInRange.add(obstacle);
+                log.append("[").append(obstacle.getPos().getX()).append(", ").append(obstacle.getPos().getY()).append("] ");
             }
         }
+        MyLogger.log(Level.INFO,"Objects in sight of drone nr" + this.getNr + ": " + log);
     }
 
-    public void setIntention(){
-        this.intention = intent.setIntention(this);
+    public void setIntention() {
+        this.intention = setIntention(this);
     }
 
     public void manageCollisions() {
-        //Sight implemented as lookForObstacles (it makes drone see only in range of 2)
+        int dist;
+
+        //Sight implemented as lookForObstacles (it makes drone to see only in specified range)
         for (GridObject obj : obstaclesInRange) {
             Point objPosAfterMove = addPoints(obj.getPos(), obj.getIntention());
             Point myPosAfterMove = addPoints(getPos(), getIntention());
-            System.out.println("[" + myPosAfterMove.getX() + "," + myPosAfterMove.getY() + "]\tgot neighbour at\t[" + objPosAfterMove.getX() + "," + objPosAfterMove.getY() + "]");
-
 
             //Same spot collision
             if (objPosAfterMove.getX() == myPosAfterMove.getX() && objPosAfterMove.getY() == myPosAfterMove.getY()) {
                 isDead = true;
                 if (obj.getType().equals("drone")) obj.isDead(true);
-                System.out.println("same spot collision: [" + myPosAfterMove.getX() + "," + myPosAfterMove.getY() + "]\t[" + objPosAfterMove.getX() + "," + objPosAfterMove.getY() + "]");
+                MyLogger.log(Level.INFO,"Same spot collision drone nr" + this.getNr + ": ["
+                        + myPosAfterMove.getX() + ", " + myPosAfterMove.getY() + "]\t["
+                        + objPosAfterMove.getX() + ", " + objPosAfterMove.getY() + "]");
                 continue;
             }
 
@@ -64,8 +75,7 @@ public class Drone implements GridObject {
                     && obj.getPos().getX() == myPosAfterMove.getX() && obj.getPos().getY() == myPosAfterMove.getY()) {
                 isDead = true;
                 if (obj.getType().equals("drone")) obj.isDead(true);
-                System.out.println("Change spot collision");
-
+                MyLogger.log(Level.INFO,"Change spot collision drone nr"+this.getNr+" & "+ obj.getNr()+".");
                 continue;
             }
 
@@ -78,7 +88,7 @@ public class Drone implements GridObject {
                 }
             } else if (obj.getPos().getY() == pos.getY()) {
                 if (Math.abs(obj.getPos().getX() - pos.getX()) == 1) {
-                    if (obj.getIntention().getX() * -1 == getIntention().getX()  && getIntention().getX() != 0 && obj.getIntention().getX() != 0) {
+                    if (obj.getIntention().getX() * -1 == getIntention().getX() && getIntention().getX() != 0 && obj.getIntention().getX() != 0) {
                         printCrossMidairData(obj, objPosAfterMove, myPosAfterMove);
                     }
                 }
@@ -87,6 +97,7 @@ public class Drone implements GridObject {
     }
 
     private void printCrossMidairData(GridObject obj, Point objPosAfterMove, Point myPosAfterMove) {
+        //TODO: check if it works properly. Prepare scenario where it should happen.
         System.out.println("Cross midair PRE: [" + pos.getX() + "," + pos.getY() + "]\t[" + obj.getPos().getX() + "," + obj.getPos().getY() + "]");
         System.out.println("Cross midair POST: [" + myPosAfterMove.getX() + "," + myPosAfterMove.getY() + "]\t[" + objPosAfterMove.getX() + "," + objPosAfterMove.getY() + "]");
         System.out.println("Intentions:\t[" + getIntention().getX() + ',' + getIntention().getY() + "]\t[" + obj.getIntention().getX() + ',' + obj.getIntention().getY() + ']');
@@ -115,9 +126,8 @@ public class Drone implements GridObject {
         this.getNr = id;
         this.col = col;
         Random rand = new Random();
-        int x = rand.nextInt(initZone.getP2().getX() - initZone.getP1().getX() + 1) + initZone.getP1().getX();
-        int y = rand.nextInt(initZone.getP2().getY() - initZone.getP1().getY() + 1) + initZone.getP1().getY();
-        this.pos = new Point(x, y);
+        if (initZone.getField().size() == 1) this.pos = initZone.getField().get(0);
+        else this.pos = initZone.getField().get(rand.nextInt() % initZone.getField().size() - 1);
         this.finishZone = finishZone;
     }
 
@@ -163,6 +173,4 @@ public class Drone implements GridObject {
         if (p2 == null) p2 = new Point(0, 0);
         return new Point(p1.getX() + p2.getX(), p1.getY() + p2.getY());
     }
-
-
 }

@@ -1,14 +1,9 @@
-package gui;
+package pl.edu.utp.gui;
 
 import java.awt.*;
-import java.awt.geom.RoundRectangle2D;
 import javax.swing.*;
 import javax.swing.table.*;
-import javax.swing.border.Border;
 
-/**
- * @version 1.0 11/09/98
- */
 public class ButtonRenderer extends JButton implements TableCellRenderer {
     private Color col;
     private String type = "";

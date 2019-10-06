@@ -1,7 +1,7 @@
-package com;
+package pl.edu.utp.com;
 
-import gui.Point;
-import gui.Zone;
+import pl.edu.utp.gui.Point;
+import pl.edu.utp.gui.Zone;
 
 import java.awt.*;
 

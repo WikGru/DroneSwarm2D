@@ -1,4 +1,4 @@
-package com;
+package pl.edu.utp.com;
 
 import java.util.ArrayList;
 

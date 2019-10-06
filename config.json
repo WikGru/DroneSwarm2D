@@ -1,4 +1,4 @@
 {
-  "windowSize": 500,
-  "gridSize": 10,
+  "gridSize": 15,
+  "logDir": "C:\\Users\\wgrud\\Desktop"
 }

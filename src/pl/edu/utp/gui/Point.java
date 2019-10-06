@@ -1,10 +1,10 @@
-package gui;
+package pl.edu.utp.gui;
 
 public class Point {
     private int x;
     private int y;
 
-    Point(){
+    public Point(){
         this.x = 0;
         this.y = 0;
     }
