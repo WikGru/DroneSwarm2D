@@ -12,7 +12,7 @@ import java.util.logging.Logger;
 
 //This class implements Drones and their behaviour
 public class Drone extends Intention implements GridObject {
-    String type = "drone";
+    private String type = "drone";
     private boolean isDead = false;
     private ArrayList<GridObject> obstaclesInRange = new ArrayList<>();
     private int range = 2;
@@ -57,8 +57,8 @@ public class Drone extends Intention implements GridObject {
 
         //Sight implemented as lookForObstacles (it makes drone to see only in specified range)
         for (GridObject obj : obstaclesInRange) {
-            Point objPosAfterMove = addPoints(obj.getPos(), obj.getIntention());
-            Point myPosAfterMove = addPoints(getPos(), getIntention());
+            Point objPosAfterMove = add(obj.getPos(), obj.getIntention());
+            Point myPosAfterMove = add(getPos(), getIntention());
 
             //Same spot collision
             if (objPosAfterMove.getX() == myPosAfterMove.getX() && objPosAfterMove.getY() == myPosAfterMove.getY()) {
@@ -168,7 +168,7 @@ public class Drone extends Intention implements GridObject {
         isDead = flag;
     }
 
-    public Point addPoints(Point p1, Point p2) {
+    private Point add(Point p1, Point p2) {
         if (p1 == null) p1 = new Point(0, 0);
         if (p2 == null) p2 = new Point(0, 0);
         return new Point(p1.getX() + p2.getX(), p1.getY() + p2.getY());

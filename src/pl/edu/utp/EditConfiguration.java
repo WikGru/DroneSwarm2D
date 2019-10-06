@@ -14,7 +14,7 @@ public class EditConfiguration extends JDialog {
     private JButton buttonDiscard;
     private JTextPane configTextPane;
 
-    public EditConfiguration() {
+    EditConfiguration() {
 
         configTextPane.setText(loadConfig());
         setContentPane(contentPane);
@@ -36,11 +36,7 @@ public class EditConfiguration extends JDialog {
         });
 
         // call onDiscard() on ESCAPE
-        contentPane.registerKeyboardAction(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                onDiscard();
-            }
-        }, KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT);
+        contentPane.registerKeyboardAction(e -> onDiscard(), KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT);
     }
 
     private void onSave() {
@@ -60,8 +56,7 @@ public class EditConfiguration extends JDialog {
 
     private String loadConfig(){
         try {
-            String myJson = new Scanner(new File("config.json")).useDelimiter("\\Z").next();
-           return myJson;
+            return new Scanner(new File("config.json")).useDelimiter("\\Z").next();
         } catch (Exception e) {
             e.printStackTrace();
         }

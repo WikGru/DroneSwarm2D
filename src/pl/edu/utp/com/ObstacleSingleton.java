@@ -15,7 +15,7 @@ public class ObstacleSingleton {
 
     public ArrayList<GridObject> obstacles;
 
-    public ObstacleSingleton() {
+    private ObstacleSingleton() {
         obstacles = new ArrayList<>();
     }
 }

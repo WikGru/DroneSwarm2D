@@ -119,26 +119,10 @@ public class App extends Component {
         s.obstacles.clear();
         try {
             loadDrones();
-        } catch (Exception e) {
-            ArrayList<GridObject> delete = new ArrayList<>();
-            for (GridObject obj : delete) {
-                s.obstacles.remove(obj);
-            }
-            resetGrid();
-        }
-        try {
             loadObstacles();
         } catch (Exception e) {
-            ArrayList<GridObject> delete = new ArrayList<>();
-            for (GridObject obj : s.obstacles) {
-                if (obj.getType().equals("wall")) delete.add(obj);
-            }
-            for (GridObject obj : delete) {
-                s.obstacles.remove(obj);
-            }
             resetGrid();
         }
-
     }
 
     private void loadDrones() {
@@ -173,6 +157,7 @@ public class App extends Component {
             }
             MyLogger.log(Level.INFO,"Drones loaded.");
         } catch (Exception e) {
+            s.obstacles.clear();
             MyLogger.log(Level.WARNING,"Execution of loadDrones failed.");
             e.printStackTrace();
         }
@@ -192,6 +177,7 @@ public class App extends Component {
             }
             MyLogger.log(Level.INFO,"Obstacles loaded.");
         } catch (Exception e) {
+            s.obstacles.clear();
             MyLogger.log(Level.WARNING,"Execution of loadObstacles failed.");
             e.printStackTrace();
         }

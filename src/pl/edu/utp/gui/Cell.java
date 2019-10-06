@@ -18,15 +18,15 @@ public class Cell {
         this.col = col;
     }
 
-    public String getType() {
+    String getType() {
         return type;
     }
 
-    public String getId() {
+    String getId() {
         return id;
     }
 
-    public Color getCol() {
+    Color getCol() {
         return col;
     }
 
