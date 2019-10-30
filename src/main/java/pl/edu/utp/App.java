@@ -2,7 +2,7 @@ package pl.edu.utp;
 
 import pl.edu.utp.com.Drone;
 import pl.edu.utp.com.GridObject;
-import pl.edu.utp.com.ObstacleSingleton;
+import pl.edu.utp.com.EntitiesSingleton;
 import pl.edu.utp.com.Wall;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -20,6 +20,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Scanner;
 import java.util.logging.*;
+import java.util.stream.Collectors;
 
 //TODO: DONE? abstraction of Intention class (research how to, and implement)
 //TODO: Log-points to set in many places
@@ -33,9 +34,7 @@ public class App extends Component {
     private JPanel gridPanel;
     private JPanel userPanel;
     private JTable gridTable;
-    private JTextPane logTextfield;
     private JButton nextStepButton;
-    private JButton logClearButton;
     private JButton resetButton;
     private JButton selectScenarioButton;
     private JButton selectEnvironmentButton;
@@ -43,16 +42,16 @@ public class App extends Component {
 
     private File dronesInput = new File("scenarioDrones.json");
     private File obstaclesInput = new File("scenarioObstacles.json");
-    private ObstacleSingleton obstacleSingleton = ObstacleSingleton.getInstance();
+    private EntitiesSingleton entitiesSingleton = EntitiesSingleton.getInstance();
     private int windowSize;
     private int gridSize = 1;
     private int stepNr = 1;
 
     public App() {
         System.setProperty("java.util.logging.SimpleFormatter.format",
-                "[%1$tF %1$tH:%1$tM:%1$tS.%1$tL] [%4$-7s] %5$obstacleSingleton %n");
+                "[%1$tF %1$tH:%1$tM:%1$tS.%1$tL] [%4$-7s] %5$entitiesSingleton %n");
 
-        MyLogger.log(Level.INFO,"Setup app settings and scenarios");
+        MyLogger.log(Level.INFO, "Setup app settings and scenarios");
 
         frame.setResizable(false);
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
@@ -94,11 +93,11 @@ public class App extends Component {
             loadScenario();
         });
 
-        MyLogger.log(Level.INFO,"App setup finished.");
+        MyLogger.log(Level.INFO, "App setup finished.");
     }
 
     private void loadConfig() {
-        MyLogger.log(Level.INFO,"Loading config.");
+        MyLogger.log(Level.INFO, "Loading config.");
         try {
             String configInput = "config.json";
             String myJson = new Scanner(new File(configInput)).useDelimiter("\\Z").next();
@@ -106,17 +105,17 @@ public class App extends Component {
             gridSize = obj.getInt("gridSize");
             // This block configure the logger with handler and formatter
 
-            MyLogger.log(Level.INFO,"Config loaded.");
+            MyLogger.log(Level.INFO, "Config loaded.");
         } catch (Exception e) {
-            MyLogger.log(Level.WARNING,"Execution of loadConfig failed.");
+            MyLogger.log(Level.WARNING, "Execution of loadConfig failed.");
             e.printStackTrace();
         }
     }
 
     private void loadScenario() {
-        MyLogger.log(Level.INFO,"Loading scenario.");
+        MyLogger.log(Level.INFO, "Loading scenario.");
         resetGrid();
-        obstacleSingleton.obstacles.clear();
+        entitiesSingleton.entitiesList.clear();
         try {
             loadDrones();
             loadObstacles();
@@ -126,12 +125,12 @@ public class App extends Component {
     }
 
     private void loadDrones() {
-        MyLogger.log(Level.INFO,"Loading drones.");
+        MyLogger.log(Level.INFO, "Loading drones.");
         try {
             String myJson = new Scanner(dronesInput).useDelimiter("\\Z").next();
             JSONArray arr = new JSONArray(myJson);
             String sBegin = "begin";
-            String sEnd = "end:";
+            String sEnd = "end";
             for (Object obj : arr) {
                 JSONObject jObj = (JSONObject) obj;
 
@@ -151,22 +150,22 @@ public class App extends Component {
 
                 //Drone creating and init drawing
                 Drone drone = new Drone("" + id, Color.decode(color), startingZone, finishZone);
-                obstacleSingleton.obstacles.add(drone);
+                entitiesSingleton.entitiesList.add(drone);
                 gridTable.setValueAt(new Cell(drone.getType(), drone.getNr(), drone.getCol()), drone.getPos().getY(), drone.getPos().getX());
                 for (Point p : drone.getFinishZone().getField()) {
                     gridTable.setValueAt(new Cell("wall", drone.getNr(), Color.decode("#bcf7b5")), p.getY(), p.getX());
                 }
             }
-            MyLogger.log(Level.INFO,"Drones loaded.");
+            MyLogger.log(Level.INFO, "Drones loaded.");
         } catch (Exception e) {
-            obstacleSingleton.obstacles.clear();
-            MyLogger.log(Level.WARNING,"Execution of loadDrones failed.");
+            entitiesSingleton.entitiesList.clear();
+            MyLogger.log(Level.WARNING, "Execution of loadDrones failed.");
             e.printStackTrace();
         }
     }
 
     private void loadObstacles() {
-        MyLogger.log(Level.INFO,"Loading obstacles.");
+        MyLogger.log(Level.INFO, "Loading entitiesList.");
         try {
             String myJson = new Scanner(obstaclesInput).useDelimiter("\\Z").next();
             JSONArray arr = new JSONArray(myJson);
@@ -174,19 +173,19 @@ public class App extends Component {
                 JSONObject jObj = (JSONObject) obj;
                 Point point = new Point(jObj.getInt("x"), jObj.getInt("y"));
                 Wall obstacle = new Wall(point);
-                obstacleSingleton.obstacles.add(obstacle);
+                entitiesSingleton.entitiesList.add(obstacle);
                 gridTable.setValueAt(new Cell("wall", obstacle.getNr(), obstacle.getCol()), obstacle.getPos().getY(), obstacle.getPos().getX());
             }
-            MyLogger.log(Level.INFO,"Obstacles loaded.");
+            MyLogger.log(Level.INFO, "Obstacles loaded.");
         } catch (Exception e) {
-            obstacleSingleton.obstacles.clear();
-            MyLogger.log(Level.WARNING,"Execution of loadObstacles failed.");
+            entitiesSingleton.entitiesList.clear();
+            MyLogger.log(Level.WARNING, "Execution of loadObstacles failed.");
             e.printStackTrace();
         }
     }
 
     private void resetGrid() {
-        MyLogger.log(Level.INFO,"Resetting grid.");
+        MyLogger.log(Level.INFO, "Resetting grid.");
         //Table size pre-set (rows and cols width and height)
         DefaultTableModel model = new DefaultTableModel(gridSize, gridSize);
         gridTable.setModel(model);
@@ -198,13 +197,13 @@ public class App extends Component {
         gridTable.setRowHeight(windowSize / gridSize);
 
         clearGrid();
-        MyLogger.log(Level.INFO,"Grid reset.");
+        MyLogger.log(Level.INFO, "Grid reset.");
     }
 
     private void resetScenario() {
-        MyLogger.log(Level.INFO,"Resetting setup and scenario.");
-        obstacleSingleton.obstacles.clear();
-        MyLogger.log(Level.INFO,"GridObjects cleared.");
+        MyLogger.log(Level.INFO, "Resetting setup and scenario.");
+        entitiesSingleton.entitiesList.clear();
+        MyLogger.log(Level.INFO, "GridObjects cleared.");
         stepNr = 1;
         loadConfig();
         resetGrid();
@@ -223,8 +222,8 @@ public class App extends Component {
 
     //Clearing grid
     private void clearGrid() {
-        for (int x = 0; x < gridTable.getColumnCount() - 1; x++) {
-            for (int y = 0; y < gridTable.getRowCount() - 1; y++) {
+        for (int x = 0; x < gridTable.getColumnCount(); x++) {
+            for (int y = 0; y < gridTable.getRowCount(); y++) {
                 gridTable.setValueAt(new Cell(), y, x);
             }
         }
@@ -232,48 +231,53 @@ public class App extends Component {
 
     //Draws finishZone for given GridObject (Drone)
     private void drawFinishZone(GridObject obj) {
-        for (Point p : obj.getFinishZone().getField()) {
-            if (p.getX() == obj.getPos().getX() && p.getY() == obj.getPos().getY()) continue;
-            gridTable.setValueAt(new Cell("wall", obj.getNr(), Color.decode("#bcf7b5")), p.getY(), p.getX());
-        }
+        obj.getFinishZone().getField().stream()
+                .filter(p -> p.getX() != obj.getPos().getX() || p.getY() != obj.getPos().getY()).forEachOrdered(p -> {
+            Cell cell = new Cell("wall", obj.getNr(), Color.decode("#bcf7b5"));
+            gridTable.setValueAt(cell, p.getY(), p.getX());
+        });
+    }
+
+    private void drawEntities() {
+        //Draw finishZones
+        entitiesSingleton.entitiesList.forEach(this::drawFinishZone);
+        //Draw GridObjects (Drones & Walls)
+        entitiesSingleton.entitiesList.forEach(entity -> {
+            gridTable.setValueAt(new Cell(), entity.getPos().getY(), entity.getPos().getX());
+            entity.lookForObstacles();
+            entity.setIntention();
+        });
+    }
+
+    private void manageCollisions() {
+        //Manage drone collisions
+        entitiesSingleton.entitiesList.forEach(GridObject::manageCollisions);
+        removeDeadDrones();
+    }
+
+    private void removeDeadDrones() {
+        //Remove drones that will collide
+        ArrayList<GridObject> entitiesToRemove = entitiesSingleton.entitiesList.stream()
+                .filter(GridObject::isDead).collect(Collectors.toCollection(ArrayList::new));
+        entitiesToRemove.forEach(entity -> entitiesSingleton.entitiesList.remove(entity));
+    }
+
+    private void moveDrones() {
+        //Move safe GridObjects (Drones. Walls cant move... duh)
+        entitiesSingleton.entitiesList.forEach(entity -> {
+            entity.move();
+            Cell cell = new Cell(entity.getType(), entity.getNr(), entity.getCol());
+            gridTable.setValueAt(cell, entity.getPos().getY(), entity.getPos().getX());
+        });
     }
 
     //Handling next step
     private void nextStep() {
-        MyLogger.log(Level.INFO,"Step nr: " + stepNr++);
+        MyLogger.log(Level.INFO, "Step nr: " + stepNr++);
+
         clearGrid();
-
-        //Draw GridObjects (Drones & Walls)
-        for (GridObject obj : obstacleSingleton.obstacles) {
-            gridTable.setValueAt(new Cell(), obj.getPos().getY(), obj.getPos().getX());
-            obj.lookForObstacles();
-            obj.setIntention();
-        }
-
-        //Manage drone collisions
-        for (GridObject obj : obstacleSingleton.obstacles) {
-            obj.manageCollisions();
-        }
-
-        //Remove drones that will collide
-        ArrayList<GridObject> toRemove = new ArrayList<>();
-        for (GridObject obj : obstacleSingleton.obstacles) {
-            if (obj.isDead()) toRemove.add(obj);
-        }
-        for (GridObject obj : toRemove) {
-            obstacleSingleton.obstacles.remove(obj);
-        }
-
-        //Move safe GriObjects (Drones. Walls cant move... duh)
-        for (GridObject obj : obstacleSingleton.obstacles) {
-            obj.move();
-            gridTable.setValueAt(new Cell(obj.getType(), obj.getNr(), obj.getCol()), obj.getPos().getY(), obj.getPos().getX());
-        }
-
-        //Draw finishZones
-        for (GridObject obj : obstacleSingleton.obstacles) {
-            drawFinishZone(obj);
-        }
-
+        drawEntities();
+        manageCollisions();
+        moveDrones();
     }
 }

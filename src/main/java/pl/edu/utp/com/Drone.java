@@ -21,7 +21,7 @@ public class Drone extends Intention implements GridObject {
     private Point pos;
     private Point intention = new Point();
     private Zone finishZone;
-    private ObstacleSingleton s = ObstacleSingleton.getInstance();
+    private EntitiesSingleton s = EntitiesSingleton.getInstance();
     private static final Logger LOGGER = Logger.getLogger(Drone.class.getName());
 
     public void move() {
@@ -37,7 +37,7 @@ public class Drone extends Intention implements GridObject {
         obstaclesInRange = new ArrayList<>();
 
         StringBuilder log = new StringBuilder();
-        for (GridObject obstacle : s.obstacles) {
+        for (GridObject obstacle : s.entitiesList) {
             if (obstacle.getPos().getX() == pos.getX() && obstacle.getPos().getY() == pos.getY()) continue;
             if (obstacle.getPos().getX() >= x1 && obstacle.getPos().getX() <= x2
                     && obstacle.getPos().getY() >= y1 && obstacle.getPos().getY() <= y2) {

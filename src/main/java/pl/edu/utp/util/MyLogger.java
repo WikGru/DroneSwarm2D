@@ -17,6 +17,7 @@ public class MyLogger {
     private static Logger LOGGER;
     private FileHandler fileHandler;
 
+    //TODO: secure logdir checking
     private MyLogger() {
         try {
             LOGGER = Logger.getLogger(MyLogger.class.getName());
