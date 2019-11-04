@@ -48,10 +48,8 @@ public class App extends Component {
     private int stepNr = 1;
 
     public App() {
-        System.setProperty("java.util.logging.SimpleFormatter.format",
-                "[%1$tF %1$tH:%1$tM:%1$tS.%1$tL] [%4$-7s] %5$entitiesSingleton %n");
 
-        MyLogger.log(Level.INFO, "Setup app settings and scenarios");
+        MyLogger.log(Level.INFO, "Starting initialization");
 
         frame.setResizable(false);
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
@@ -61,8 +59,6 @@ public class App extends Component {
         resetButton.addActionListener(e -> resetScenario());
         //NextStep actionListener
         nextStepButton.addActionListener(e -> nextStep());
-        //ClearLog actionListener
-        //TODO: attach button to something: logClearButton.addActionListener(e -> <some function>);
 
         //Dialog with textfield to edit windowSize and gridSize
         editConfigurationButton.addActionListener(e -> {
@@ -80,6 +76,7 @@ public class App extends Component {
                 dronesInput = scenarioDrones.getSelectedFile();
             }
             loadScenario();
+            drawEntities();
         });
         //Dialog with FileChooser for choosing Obstacles scenario JSON file
         selectEnvironmentButton.addActionListener(e -> {
@@ -93,39 +90,35 @@ public class App extends Component {
             loadScenario();
         });
 
-        MyLogger.log(Level.INFO, "App setup finished.");
+        MyLogger.log(Level.INFO, "Initialization finished.");
     }
 
     private void loadConfig() {
-        MyLogger.log(Level.INFO, "Loading config.");
         try {
             String configInput = "config.json";
             String myJson = new Scanner(new File(configInput)).useDelimiter("\\Z").next();
             JSONObject obj = new JSONObject(myJson);
             gridSize = obj.getInt("gridSize");
-            // This block configure the logger with handler and formatter
-
-            MyLogger.log(Level.INFO, "Config loaded.");
         } catch (Exception e) {
-            MyLogger.log(Level.WARNING, "Execution of loadConfig failed.");
-            e.printStackTrace();
+            MyLogger.log(Level.WARNING, "Loading config failed.");
+            MyLogger.log(Level.WARNING, e.getMessage());
         }
     }
 
     private void loadScenario() {
-        MyLogger.log(Level.INFO, "Loading scenario.");
         resetGrid();
         entitiesSingleton.entitiesList.clear();
         try {
             loadDrones();
             loadObstacles();
         } catch (Exception e) {
+            MyLogger.log(Level.WARNING, "Encountered problem while loading scenario.");
+            MyLogger.log(Level.WARNING, e.getMessage());
             resetGrid();
         }
     }
 
     private void loadDrones() {
-        MyLogger.log(Level.INFO, "Loading drones.");
         try {
             String myJson = new Scanner(dronesInput).useDelimiter("\\Z").next();
             JSONArray arr = new JSONArray(myJson);
@@ -151,21 +144,17 @@ public class App extends Component {
                 //Drone creating and init drawing
                 Drone drone = new Drone("" + id, Color.decode(color), startingZone, finishZone);
                 entitiesSingleton.entitiesList.add(drone);
-                gridTable.setValueAt(new Cell(drone.getType(), drone.getNr(), drone.getCol()), drone.getPos().getY(), drone.getPos().getX());
-                for (Point p : drone.getFinishZone().getField()) {
-                    gridTable.setValueAt(new Cell("wall", drone.getNr(), Color.decode("#bcf7b5")), p.getY(), p.getX());
-                }
+//                gridTable.setValueAt(new Cell(drone.getType(), drone.getNr(), drone.getCol()), drone.getPos().getY(), drone.getPos().getX());
             }
-            MyLogger.log(Level.INFO, "Drones loaded.");
+            drawEntities();
         } catch (Exception e) {
             entitiesSingleton.entitiesList.clear();
             MyLogger.log(Level.WARNING, "Execution of loadDrones failed.");
-            e.printStackTrace();
+            MyLogger.log(Level.WARNING, e.getMessage());
         }
     }
 
     private void loadObstacles() {
-        MyLogger.log(Level.INFO, "Loading entitiesList.");
         try {
             String myJson = new Scanner(obstaclesInput).useDelimiter("\\Z").next();
             JSONArray arr = new JSONArray(myJson);
@@ -176,16 +165,15 @@ public class App extends Component {
                 entitiesSingleton.entitiesList.add(obstacle);
                 gridTable.setValueAt(new Cell("wall", obstacle.getNr(), obstacle.getCol()), obstacle.getPos().getY(), obstacle.getPos().getX());
             }
-            MyLogger.log(Level.INFO, "Obstacles loaded.");
         } catch (Exception e) {
             entitiesSingleton.entitiesList.clear();
-            MyLogger.log(Level.WARNING, "Execution of loadObstacles failed.");
+            MyLogger.log(Level.WARNING, "Encountered problem while loading obstacles.");
+            MyLogger.log(Level.WARNING, e.getMessage());
             e.printStackTrace();
         }
     }
 
     private void resetGrid() {
-        MyLogger.log(Level.INFO, "Resetting grid.");
         //Table size pre-set (rows and cols width and height)
         DefaultTableModel model = new DefaultTableModel(gridSize, gridSize);
         gridTable.setModel(model);
@@ -201,9 +189,7 @@ public class App extends Component {
     }
 
     private void resetScenario() {
-        MyLogger.log(Level.INFO, "Resetting setup and scenario.");
         entitiesSingleton.entitiesList.clear();
-        MyLogger.log(Level.INFO, "GridObjects cleared.");
         stepNr = 1;
         loadConfig();
         resetGrid();
@@ -243,14 +229,15 @@ public class App extends Component {
         entitiesSingleton.entitiesList.forEach(this::drawFinishZone);
         //Draw GridObjects (Drones & Walls)
         entitiesSingleton.entitiesList.forEach(entity -> {
-            gridTable.setValueAt(new Cell(), entity.getPos().getY(), entity.getPos().getX());
-            entity.lookForObstacles();
-            entity.setIntention();
+            Cell cell = new Cell(entity.getType(), entity.getNr(), entity.getCol());
+            gridTable.setValueAt(cell, entity.getPos().getY(), entity.getPos().getX());
         });
     }
 
     private void manageCollisions() {
         //Manage drone collisions
+        entitiesSingleton.entitiesList.forEach(GridObject::lookForObstacles);
+        entitiesSingleton.entitiesList.forEach(GridObject::setIntention);
         entitiesSingleton.entitiesList.forEach(GridObject::manageCollisions);
         removeDeadDrones();
     }
@@ -264,20 +251,19 @@ public class App extends Component {
 
     private void moveDrones() {
         //Move safe GridObjects (Drones. Walls cant move... duh)
-        entitiesSingleton.entitiesList.forEach(entity -> {
-            entity.move();
-            Cell cell = new Cell(entity.getType(), entity.getNr(), entity.getCol());
-            gridTable.setValueAt(cell, entity.getPos().getY(), entity.getPos().getX());
-        });
+        entitiesSingleton.entitiesList.forEach(GridObject::move);
     }
 
     //Handling next step
     private void nextStep() {
-        MyLogger.log(Level.INFO, "Step nr: " + stepNr++);
+        MyLogger.log(Level.INFO, "Step nr: " + stepNr);
 
         clearGrid();
-        drawEntities();
         manageCollisions();
         moveDrones();
+        drawEntities();
+
+
+        MyLogger.log(Level.INFO, "End of step nr: " + stepNr++);
     }
 }

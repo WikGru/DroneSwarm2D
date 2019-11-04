@@ -5,6 +5,8 @@ import org.json.JSONObject;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.sql.Timestamp;
 import java.util.Scanner;
 import java.util.logging.FileHandler;
@@ -17,14 +19,17 @@ public class MyLogger {
     private static Logger LOGGER;
     private FileHandler fileHandler;
 
-    //TODO: secure logdir checking
     private MyLogger() {
         try {
+            System.setProperty("java.util.logging.SimpleFormatter.format",
+                    "[%1$tF %1$tH:%1$tM:%1$tS.%1$tL] [%4$-7s] %5$s %n");
+
             LOGGER = Logger.getLogger(MyLogger.class.getName());
             String configInput = "config.json";
             String myJson = new Scanner(new File(configInput)).useDelimiter("\\Z").next();
             JSONObject obj = new JSONObject(myJson);
             String logDir = obj.getString("logDir");
+            if (Files.notExists(Paths.get(logDir))) logDir = System.getProperty("user.home");
             logDir += "/log_" + String.valueOf(new Timestamp(System.currentTimeMillis())).replaceAll("[:;.]", "").replace(' ', '_') + ".txt";
             try {
                 fileHandler = new FileHandler(logDir);
@@ -35,13 +40,14 @@ public class MyLogger {
             assert fileHandler != null;
             fileHandler.setFormatter(formatter);
             LOGGER.addHandler(fileHandler);
+
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
     }
 
-    private static Logger getLogger(){
-        if(LOGGER == null){
+    private static Logger getLogger() {
+        if (LOGGER == null) {
             new MyLogger();
         }
         return LOGGER;
