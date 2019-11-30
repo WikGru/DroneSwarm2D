@@ -9,7 +9,7 @@
         <module name="DroneSwarm2D" />
       </profile>
     </annotationProcessing>
-    <bytecodeTargetLevel target="11">
+    <bytecodeTargetLevel>
       <module name="DroneSwarm2D" target="11" />
     </bytecodeTargetLevel>
   </component>

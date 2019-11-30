@@ -1,7 +1,11 @@
 package pl.edu.utp.com;
 
+import pl.edu.utp.behaviour.AvoidingIntention;
+import pl.edu.utp.behaviour.BlindIntention;
+import pl.edu.utp.behaviour.Intention;
 import pl.edu.utp.gui.Point;
 import pl.edu.utp.gui.Zone;
+import pl.edu.utp.util.Behaviour;
 import pl.edu.utp.util.MyLogger;
 
 import java.awt.*;
@@ -11,7 +15,12 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 //This class implements Drones and their behaviour
-public class Drone extends Intention implements GridObject {
+public class Drone implements GridObject {
+    private Intention defaultBehaviour = new BlindIntention();
+    private Intention avoidingBehaviour = new AvoidingIntention();
+
+    private Intention behaviour = defaultBehaviour;
+
     private String type = "drone";
     private boolean isDead = false;
     private ArrayList<GridObject> obstaclesInRange = new ArrayList<>();
@@ -48,8 +57,17 @@ public class Drone extends Intention implements GridObject {
         MyLogger.log(Level.INFO, "Objects in sight of drone nr" + this.getNr + ": " + log);
     }
 
-    public void setIntention() {
-        this.intention = setIntention(this);
+    public void setIntention(Behaviour behaviour) {
+        switch(behaviour){
+            case AVOIDING:
+                this.behaviour = avoidingBehaviour;
+                break;
+            case DEFAULT:
+                this.behaviour = defaultBehaviour;
+                break;
+        }
+        this.intention = this.behaviour.setIntention(this);
+
     }
 
     public void manageCollisions() {

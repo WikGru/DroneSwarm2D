@@ -2,6 +2,7 @@ package pl.edu.utp.com;
 
 import pl.edu.utp.gui.Point;
 import pl.edu.utp.gui.Zone;
+import pl.edu.utp.util.Behaviour;
 
 import java.awt.*;
 //This class implements static objects with constant position on grid
@@ -39,7 +40,7 @@ public class Wall implements GridObject {
     }
 
     @Override
-    public void setIntention() {
+    public void setIntention(Behaviour aDefault) {
         //Static obstacle
         //Stones has no intentions
     }

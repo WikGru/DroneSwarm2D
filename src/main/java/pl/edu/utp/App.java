@@ -10,6 +10,7 @@ import pl.edu.utp.gui.ButtonRenderer;
 import pl.edu.utp.gui.Cell;
 import pl.edu.utp.gui.Point;
 import pl.edu.utp.gui.Zone;
+import pl.edu.utp.util.Behaviour;
 import pl.edu.utp.util.MyLogger;
 
 import javax.swing.*;
@@ -22,10 +23,7 @@ import java.util.Scanner;
 import java.util.logging.*;
 import java.util.stream.Collectors;
 
-//TODO: DONE? abstraction of Intention class (research how to, and implement)
-//TODO: Log-points to set in many places
-// line 68 - attach button to something: logClearButton.addActionListener(e -> log.clearLogDisplay());
-//TODO: learn how to and implement dynamic dependencies system for JSON library
+//TODO: wiecej implementacji intencji (klasa przygotowana, napisz tylko to unikanie)
 
 //This is the main App class used to run the simulation
 public class App extends Component {
@@ -39,6 +37,8 @@ public class App extends Component {
     private JButton selectScenarioButton;
     private JButton selectEnvironmentButton;
     private JButton editConfigurationButton;
+    private JRadioButton blindIntentionRbtn;
+    private JRadioButton avoidingIntentionRbtn;
 
     private File dronesInput = new File("scenarioDrones.json");
     private File obstaclesInput = new File("scenarioObstacles.json");
@@ -48,6 +48,9 @@ public class App extends Component {
     private int stepNr = 1;
 
     public App() {
+        ButtonGroup group = new ButtonGroup();
+        group.add(blindIntentionRbtn);
+        group.add(avoidingIntentionRbtn);
 
         MyLogger.log(Level.INFO, "Starting initialization");
 
@@ -144,7 +147,6 @@ public class App extends Component {
                 //Drone creating and init drawing
                 Drone drone = new Drone("" + id, Color.decode(color), startingZone, finishZone);
                 entitiesSingleton.entitiesList.add(drone);
-//                gridTable.setValueAt(new Cell(drone.getType(), drone.getNr(), drone.getCol()), drone.getPos().getY(), drone.getPos().getX());
             }
             drawEntities();
         } catch (Exception e) {
@@ -237,7 +239,13 @@ public class App extends Component {
     private void manageCollisions() {
         //Manage drone collisions
         entitiesSingleton.entitiesList.forEach(GridObject::lookForObstacles);
-        entitiesSingleton.entitiesList.forEach(GridObject::setIntention);
+        Behaviour behaviour;
+        if (blindIntentionRbtn.isSelected()) {
+            behaviour = Behaviour.DEFAULT;
+        } else {
+            behaviour = Behaviour.AVOIDING;
+        }
+        entitiesSingleton.entitiesList.forEach(go -> go.setIntention(behaviour));
         entitiesSingleton.entitiesList.forEach(GridObject::manageCollisions);
         removeDeadDrones();
     }

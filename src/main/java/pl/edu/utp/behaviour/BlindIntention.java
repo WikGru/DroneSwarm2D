@@ -1,9 +1,10 @@
-package pl.edu.utp.com;
+package pl.edu.utp.behaviour;
 
+import pl.edu.utp.com.GridObject;
 import pl.edu.utp.gui.Point;
 
-abstract class Intention {
-    Point setIntention(GridObject obj) {
+public class BlindIntention implements Intention {
+    public Point setIntention(GridObject obj) {
         for(Point p : obj.getFinishZone().getField()){
             if(p.getX() == obj.getPos().getX() && p.getY() == obj.getPos().getY()) return new Point();
         }

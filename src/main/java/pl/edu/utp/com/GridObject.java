@@ -2,6 +2,7 @@ package pl.edu.utp.com;
 
 import pl.edu.utp.gui.Point;
 import pl.edu.utp.gui.Zone;
+import pl.edu.utp.util.Behaviour;
 
 import java.awt.*;
 
@@ -12,7 +13,7 @@ public interface GridObject {
     Color getCol();
     Point getPos();
     Point getIntention();
-    void setIntention();
+    void setIntention(Behaviour aDefault);
     void move();
     void lookForObstacles();
     void manageCollisions();
