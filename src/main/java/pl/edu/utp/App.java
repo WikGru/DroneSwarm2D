@@ -97,9 +97,9 @@ public class App extends Component {
     }
 
     private void loadConfig() {
-        try {
-            String configInput = "config.json";
-            String myJson = new Scanner(new File(configInput)).useDelimiter("\\Z").next();
+        String configInput = "config.json";
+        try (Scanner myScanner = new Scanner(new File(configInput));){
+            String myJson = myScanner.useDelimiter("\\Z").next();
             JSONObject obj = new JSONObject(myJson);
             gridSize = obj.getInt("gridSize");
         } catch (Exception e) {
@@ -122,8 +122,8 @@ public class App extends Component {
     }
 
     private void loadDrones() {
-        try {
-            String myJson = new Scanner(dronesInput).useDelimiter("\\Z").next();
+        try (Scanner myScanner = new Scanner(dronesInput)){
+            String myJson = myScanner.useDelimiter("\\Z").next();
             JSONArray arr = new JSONArray(myJson);
             String sBegin = "begin";
             String sEnd = "end";
@@ -157,8 +157,8 @@ public class App extends Component {
     }
 
     private void loadObstacles() {
-        try {
-            String myJson = new Scanner(obstaclesInput).useDelimiter("\\Z").next();
+        try (Scanner myScanner = new Scanner(obstaclesInput)){
+            String myJson = myScanner.useDelimiter("\\Z").next();
             JSONArray arr = new JSONArray(myJson);
             for (Object obj : arr) {
                 JSONObject jObj = (JSONObject) obj;

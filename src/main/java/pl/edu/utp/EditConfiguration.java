@@ -40,10 +40,8 @@ public class EditConfiguration extends JDialog {
     }
 
     private void onSave() {
-        try {
-            BufferedWriter writer = new BufferedWriter(new FileWriter("config.json"));
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter("config.json"))) {
             writer.write(configTextPane.getText());
-            writer.close();
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -54,9 +52,9 @@ public class EditConfiguration extends JDialog {
         dispose();
     }
 
-    private String loadConfig(){
-        try {
-            return new Scanner(new File("config.json")).useDelimiter("\\Z").next();
+    private String loadConfig() {
+        try (Scanner myScanner = new Scanner(new File("config.json"))){
+            return myScanner.useDelimiter("\\Z").next();
         } catch (Exception e) {
             e.printStackTrace();
         }

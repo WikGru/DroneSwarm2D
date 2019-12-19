@@ -20,13 +20,12 @@ public class MyLogger {
     private FileHandler fileHandler;
 
     private MyLogger() {
-        try {
+        try (Scanner myScanner = new Scanner(new File("config.json"))) {
             System.setProperty("java.util.logging.SimpleFormatter.format",
                     "[%1$tF %1$tH:%1$tM:%1$tS.%1$tL] [%4$-7s] %5$s %n");
 
             LOGGER = Logger.getLogger(MyLogger.class.getName());
-            String configInput = "config.json";
-            String myJson = new Scanner(new File(configInput)).useDelimiter("\\Z").next();
+            String myJson = myScanner.useDelimiter("\\Z").next();
             JSONObject obj = new JSONObject(myJson);
             String logDir = obj.getString("logDir");
             if (Files.notExists(Paths.get(logDir))) logDir = System.getProperty("user.home");
@@ -54,6 +53,10 @@ public class MyLogger {
     }
 
     public static void log(Level level, String msg) {
-        getLogger().log(level, msg);
+        try {
+            getLogger().log(level, msg);
+        } catch (NullPointerException e){
+            e.printStackTrace();
+        }
     }
 }
