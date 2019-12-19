@@ -45,11 +45,14 @@ public class MyLogger {
         }
     }
 
-    public static void log(Level level, String msg) {
+    private static Logger getLogger() {
         if (LOGGER == null) {
             new MyLogger();
         }
+        return LOGGER;
+    }
 
-        LOGGER.log(level, msg);
+    public static void log(Level level, String msg) {
+        getLogger().log(level, msg);
     }
 }

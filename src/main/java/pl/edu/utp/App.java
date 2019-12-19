@@ -269,7 +269,7 @@ public class App extends Component {
         manageCollisions();
         moveDrones();
         drawEntities();
-        
+
         MyLogger.log(Level.INFO, "End of step nr: " + stepNr++);
     }
 }

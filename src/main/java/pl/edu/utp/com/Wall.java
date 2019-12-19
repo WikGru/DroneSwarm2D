@@ -70,12 +70,13 @@ public class Wall implements GridObject {
 
     @Override
     public boolean isDead() {
+        // Wall cannot be dead
         return false;
     }
 
     @Override
-    public void isDead(boolean flag) {
-
+    public void setIsDead(boolean flag) {
+        // Wall is always alive therefore no setting here
     }
 
     public void setPos(Point pos) {

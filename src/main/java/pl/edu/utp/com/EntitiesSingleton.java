@@ -1,6 +1,5 @@
 package pl.edu.utp.com;
 
-import javax.swing.text.html.parser.Entity;
 import java.util.ArrayList;
 
 public class EntitiesSingleton {

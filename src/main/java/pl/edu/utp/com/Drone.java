@@ -79,7 +79,7 @@ public class Drone implements GridObject {
             //Same spot collision
             if (objPosAfterMove.getX() == myPosAfterMove.getX() && objPosAfterMove.getY() == myPosAfterMove.getY()) {
                 isDead = true;
-                if (obj.getType().equals("drone")) obj.isDead(true);
+                if (obj.getType().equals("drone")) obj.setIsDead(true);
                 MyLogger.log(Level.INFO, "Same spot collision drone nr" + this.getNr + ": ["
                         + myPosAfterMove.getX() + ", " + myPosAfterMove.getY() + "]\t["
                         + objPosAfterMove.getX() + ", " + objPosAfterMove.getY() + "]");
@@ -90,7 +90,7 @@ public class Drone implements GridObject {
             if (objPosAfterMove.getX() == pos.getX() && objPosAfterMove.getY() == pos.getY()
                     && obj.getPos().getX() == myPosAfterMove.getX() && obj.getPos().getY() == myPosAfterMove.getY()) {
                 isDead = true;
-                if (obj.getType().equals("drone")) obj.isDead(true);
+                if (obj.getType().equals("drone")) obj.setIsDead(true);
                 MyLogger.log(Level.INFO, "Change spot collision drone nr" + this.getNr + " & nr" + obj.getNr() + ".");
                 continue;
             }
@@ -118,7 +118,7 @@ public class Drone implements GridObject {
                 + this.getPos().getX() + ", " + this.getPos().getY() + "] -> [" + +myPosAfterMove.getX() + ", " + myPosAfterMove.getY() + "]  &  ["
                 + obj.getPos().getX() + ", " + obj.getPos().getY() + "] -> [" + +objPosAfterMove.getX() + ", " + objPosAfterMove.getY() + "].");
         isDead = true;
-        if (obj.getType().equals("drone")) obj.isDead(true);
+        if (obj.getType().equals("drone")) obj.setIsDead(true);
     }
 
     //From zone to zone
@@ -160,7 +160,7 @@ public class Drone implements GridObject {
     }
 
     @Override
-    public void isDead(boolean flag) {
+    public void setIsDead(boolean flag) {
         isDead = flag;
     }
 

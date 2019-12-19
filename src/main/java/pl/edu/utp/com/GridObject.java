@@ -19,5 +19,5 @@ public interface GridObject {
     void manageCollisions();
     Zone getFinishZone();
     boolean isDead();
-    void isDead(boolean flag);
+    void setIsDead(boolean flag);
 }
