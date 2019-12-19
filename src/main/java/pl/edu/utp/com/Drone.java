@@ -46,7 +46,7 @@ public class Drone implements GridObject {
         obstaclesInRange = new ArrayList<>();
 
         StringBuilder log = new StringBuilder();
-        for (GridObject obstacle : s.entitiesList) {
+        for (GridObject obstacle : s.getEntitiesList()) {
             if (obstacle.getPos().getX() == pos.getX() && obstacle.getPos().getY() == pos.getY()) continue;
             if (obstacle.getPos().getX() >= x1 && obstacle.getPos().getX() <= x2
                     && obstacle.getPos().getY() >= y1 && obstacle.getPos().getY() <= y2) {

@@ -110,7 +110,7 @@ public class App extends Component {
 
     private void loadScenario() {
         resetGrid();
-        entitiesSingleton.entitiesList.clear();
+        entitiesSingleton.clearEntitiesList();
         try {
             loadDrones();
             loadObstacles();
@@ -146,11 +146,11 @@ public class App extends Component {
 
                 //Drone creating and init drawing
                 Drone drone = new Drone("" + id, Color.decode(color), startingZone, finishZone);
-                entitiesSingleton.entitiesList.add(drone);
+                entitiesSingleton.addEntityToList(drone);
             }
             drawEntities();
         } catch (Exception e) {
-            entitiesSingleton.entitiesList.clear();
+            entitiesSingleton.clearEntitiesList();
             MyLogger.log(Level.WARNING, "Execution of loadDrones failed.");
             MyLogger.log(Level.WARNING, e.getMessage());
         }
@@ -164,11 +164,11 @@ public class App extends Component {
                 JSONObject jObj = (JSONObject) obj;
                 Point point = new Point(jObj.getInt("x"), jObj.getInt("y"));
                 Wall obstacle = new Wall(point);
-                entitiesSingleton.entitiesList.add(obstacle);
+                entitiesSingleton.addEntityToList(obstacle);
                 gridTable.setValueAt(new Cell("wall", obstacle.getNr(), obstacle.getCol()), obstacle.getPos().getY(), obstacle.getPos().getX());
             }
         } catch (Exception e) {
-            entitiesSingleton.entitiesList.clear();
+            entitiesSingleton.clearEntitiesList();
             MyLogger.log(Level.WARNING, "Encountered problem while loading obstacles.");
             MyLogger.log(Level.WARNING, e.getMessage());
         }
@@ -190,7 +190,7 @@ public class App extends Component {
     }
 
     private void resetScenario() {
-        entitiesSingleton.entitiesList.clear();
+        entitiesSingleton.clearEntitiesList();
         stepNr = 1;
         loadConfig();
         resetGrid();
@@ -227,9 +227,9 @@ public class App extends Component {
 
     private void drawEntities() {
         //Draw finishZones
-        entitiesSingleton.entitiesList.forEach(this::drawFinishZone);
+        entitiesSingleton.getEntitiesList().forEach(this::drawFinishZone);
         //Draw GridObjects (Drones & Walls)
-        entitiesSingleton.entitiesList.forEach(entity -> {
+        entitiesSingleton.getEntitiesList().forEach(entity -> {
             Cell cell = new Cell(entity.getType(), entity.getNr(), entity.getCol());
             gridTable.setValueAt(cell, entity.getPos().getY(), entity.getPos().getX());
         });
@@ -237,28 +237,28 @@ public class App extends Component {
 
     private void manageCollisions() {
         //Manage drone collisions
-        entitiesSingleton.entitiesList.forEach(GridObject::lookForObstacles);
+        entitiesSingleton.getEntitiesList().forEach(GridObject::lookForObstacles);
         Behaviour behaviour;
         if (blindIntentionRbtn.isSelected()) {
             behaviour = Behaviour.DEFAULT;
         } else {
             behaviour = Behaviour.AVOIDING;
         }
-        entitiesSingleton.entitiesList.forEach(go -> go.setIntention(behaviour));
-        entitiesSingleton.entitiesList.forEach(GridObject::manageCollisions);
+        entitiesSingleton.getEntitiesList().forEach(go -> go.setIntention(behaviour));
+        entitiesSingleton.getEntitiesList().forEach(GridObject::manageCollisions);
         removeDeadDrones();
     }
 
     private void removeDeadDrones() {
         //Remove drones that will collide
-        ArrayList<GridObject> entitiesToRemove = entitiesSingleton.entitiesList.stream()
+        ArrayList<GridObject> entitiesToRemove = entitiesSingleton.getEntitiesList().stream()
                 .filter(GridObject::isDead).collect(Collectors.toCollection(ArrayList::new));
-        entitiesToRemove.forEach(entity -> entitiesSingleton.entitiesList.remove(entity));
+        entitiesToRemove.forEach(entity -> entitiesSingleton.removeEntityFromList(entity));
     }
 
     private void moveDrones() {
         //Move safe GridObjects (Drones. Walls cant move... duh)
-        entitiesSingleton.entitiesList.forEach(GridObject::move);
+        entitiesSingleton.getEntitiesList().forEach(GridObject::move);
     }
 
     //Handling next step
@@ -269,8 +269,7 @@ public class App extends Component {
         manageCollisions();
         moveDrones();
         drawEntities();
-
-
+        
         MyLogger.log(Level.INFO, "End of step nr: " + stepNr++);
     }
 }

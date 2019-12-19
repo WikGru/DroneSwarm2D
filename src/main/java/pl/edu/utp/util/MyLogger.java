@@ -33,7 +33,7 @@ public class MyLogger {
             try {
                 fileHandler = new FileHandler(logDir);
             } catch (IOException e) {
-                e.printStackTrace();
+                LOGGER.log(Level.WARNING, e.getMessage());
             }
             SimpleFormatter formatter = new SimpleFormatter();
             assert fileHandler != null;
@@ -41,20 +41,15 @@ public class MyLogger {
             LOGGER.addHandler(fileHandler);
 
         } catch (FileNotFoundException e) {
-            e.printStackTrace();
+            LOGGER.log(Level.WARNING, e.getMessage());
         }
-    }
-
-    private static Logger getLogger() {
-        if (LOGGER == null) {
-            new MyLogger();
-        }
-        return LOGGER;
     }
 
     public static void log(Level level, String msg) {
-        if(getLogger() != null) {
-            getLogger().log(level, msg);
+        if (LOGGER == null) {
+            new MyLogger();
         }
+
+        LOGGER.log(level, msg);
     }
 }
