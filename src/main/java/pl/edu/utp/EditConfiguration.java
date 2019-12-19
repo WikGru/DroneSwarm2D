@@ -1,5 +1,7 @@
 package pl.edu.utp;
 
+import pl.edu.utp.util.MyLogger;
+
 import javax.swing.*;
 import java.awt.event.*;
 import java.io.BufferedWriter;
@@ -7,6 +9,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Scanner;
+import java.util.logging.Level;
 
 public class EditConfiguration extends JDialog {
     private JPanel contentPane;
@@ -43,7 +46,7 @@ public class EditConfiguration extends JDialog {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter("config.json"))) {
             writer.write(configTextPane.getText());
         } catch (IOException e) {
-            e.printStackTrace();
+            MyLogger.log(Level.WARNING, e.getMessage());
         }
         dispose();
     }
@@ -53,10 +56,10 @@ public class EditConfiguration extends JDialog {
     }
 
     private String loadConfig() {
-        try (Scanner myScanner = new Scanner(new File("config.json"))){
+        try (Scanner myScanner = new Scanner(new File("config.json"))) {
             return myScanner.useDelimiter("\\Z").next();
         } catch (Exception e) {
-            e.printStackTrace();
+            MyLogger.log(Level.WARNING, e.getMessage());
         }
         return null;
     }

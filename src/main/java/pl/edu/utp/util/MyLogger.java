@@ -53,10 +53,8 @@ public class MyLogger {
     }
 
     public static void log(Level level, String msg) {
-        try {
+        if(getLogger() != null) {
             getLogger().log(level, msg);
-        } catch (NullPointerException e){
-            e.printStackTrace();
         }
     }
 }

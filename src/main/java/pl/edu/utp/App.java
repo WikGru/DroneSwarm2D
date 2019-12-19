@@ -171,7 +171,6 @@ public class App extends Component {
             entitiesSingleton.entitiesList.clear();
             MyLogger.log(Level.WARNING, "Encountered problem while loading obstacles.");
             MyLogger.log(Level.WARNING, e.getMessage());
-            e.printStackTrace();
         }
     }
 
