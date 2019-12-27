@@ -17,9 +17,12 @@ import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
+import java.awt.event.ActionListener;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Scanner;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.logging.*;
 import java.util.stream.Collectors;
 
@@ -98,7 +101,7 @@ public class App extends Component {
 
     private void loadConfig() {
         String configInput = "config.json";
-        try (Scanner myScanner = new Scanner(new File(configInput));){
+        try (Scanner myScanner = new Scanner(new File(configInput));) {
             String myJson = myScanner.useDelimiter("\\Z").next();
             JSONObject obj = new JSONObject(myJson);
             gridSize = obj.getInt("gridSize");
@@ -122,7 +125,7 @@ public class App extends Component {
     }
 
     private void loadDrones() {
-        try (Scanner myScanner = new Scanner(dronesInput)){
+        try (Scanner myScanner = new Scanner(dronesInput)) {
             String myJson = myScanner.useDelimiter("\\Z").next();
             JSONArray arr = new JSONArray(myJson);
             String sBegin = "begin";
@@ -157,7 +160,7 @@ public class App extends Component {
     }
 
     private void loadObstacles() {
-        try (Scanner myScanner = new Scanner(obstaclesInput)){
+        try (Scanner myScanner = new Scanner(obstaclesInput)) {
             String myJson = myScanner.useDelimiter("\\Z").next();
             JSONArray arr = new JSONArray(myJson);
             for (Object obj : arr) {

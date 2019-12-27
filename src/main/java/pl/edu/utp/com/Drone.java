@@ -37,7 +37,7 @@ public class Drone implements GridObject {
         this.pos = new Point(getPos().getX() + intention.getX(), getPos().getY() + intention.getY());
     }
 
-    public void lookForObstacles() {
+    public ArrayList<GridObject> lookForObstacles() {
         int x1 = pos.getX() - range;
         int x2 = pos.getX() + range;
         int y1 = pos.getY() - range;
@@ -55,6 +55,8 @@ public class Drone implements GridObject {
             }
         }
         MyLogger.log(Level.INFO, "Objects in sight of drone nr" + this.getNr + ": " + log);
+
+        return obstaclesInRange;
     }
 
     public void setIntention(Behaviour behaviour) {
@@ -70,7 +72,7 @@ public class Drone implements GridObject {
 
     }
 
-    public void manageCollisions() {
+    public boolean manageCollisions() {
         //Sight implemented as lookForObstacles (it makes drone to see only in specified range)
         for (GridObject obj : obstaclesInRange) {
             Point objPosAfterMove = add(obj.getPos(), obj.getIntention());
@@ -80,10 +82,10 @@ public class Drone implements GridObject {
             if (objPosAfterMove.getX() == myPosAfterMove.getX() && objPosAfterMove.getY() == myPosAfterMove.getY()) {
                 isDead = true;
                 if (obj.getType().equals("drone")) obj.setIsDead(true);
-                MyLogger.log(Level.INFO, "Same spot collision drone nr" + this.getNr + ": ["
+                MyLogger.log(Level.INFO, "Same spot collision drone nr " + this.getNr + ": ["
                         + myPosAfterMove.getX() + ", " + myPosAfterMove.getY() + "]\t["
                         + objPosAfterMove.getX() + ", " + objPosAfterMove.getY() + "]");
-                continue;
+                return true;
             }
 
             //Changed positions
@@ -91,8 +93,8 @@ public class Drone implements GridObject {
                     && obj.getPos().getX() == myPosAfterMove.getX() && obj.getPos().getY() == myPosAfterMove.getY()) {
                 isDead = true;
                 if (obj.getType().equals("drone")) obj.setIsDead(true);
-                MyLogger.log(Level.INFO, "Change spot collision drone nr" + this.getNr + " & nr" + obj.getNr() + ".");
-                continue;
+                MyLogger.log(Level.INFO, "Change spot collision drone nr " + this.getNr + " & nr " + obj.getNr() + ".");
+                return true;
             }
 
             //Crossed midair
@@ -100,21 +102,23 @@ public class Drone implements GridObject {
                 if (Math.abs(obj.getPos().getY() - pos.getY()) == 1) {
                     if (obj.getIntention().getY() * -1 == getIntention().getY() && getIntention().getY() != 0 && obj.getIntention().getY() != 0) {
                         handleCrossMidAirCollision(obj, objPosAfterMove, myPosAfterMove);
+                        return true;
                     }
                 }
             } else if (obj.getPos().getY() == pos.getY()) {
                 if (Math.abs(obj.getPos().getX() - pos.getX()) == 1) {
                     if (obj.getIntention().getX() * -1 == getIntention().getX() && getIntention().getX() != 0 && obj.getIntention().getX() != 0) {
                         handleCrossMidAirCollision(obj, objPosAfterMove, myPosAfterMove);
+                        return true;
                     }
                 }
             }
         }
+        return false;
     }
 
     private void handleCrossMidAirCollision(GridObject obj, Point objPosAfterMove, Point myPosAfterMove) {
-        MyLogger.log(Level.INFO, "Crossed mid-air drone nr" + this.getNr + " & " + obj.getNr() + ".");
-        MyLogger.log(Level.INFO, "----Attempted movements: ["
+        MyLogger.log(Level.INFO, "Crossed mid-air drone nr " + this.getNr + " & nr " + obj.getNr() + ". Attempted movements: ["
                 + this.getPos().getX() + ", " + this.getPos().getY() + "] -> [" + +myPosAfterMove.getX() + ", " + myPosAfterMove.getY() + "]  &  ["
                 + obj.getPos().getX() + ", " + obj.getPos().getY() + "] -> [" + +objPosAfterMove.getX() + ", " + objPosAfterMove.getY() + "].");
         isDead = true;

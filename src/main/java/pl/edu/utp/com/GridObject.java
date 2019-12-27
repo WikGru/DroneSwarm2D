@@ -5,6 +5,7 @@ import pl.edu.utp.gui.Zone;
 import pl.edu.utp.util.Behaviour;
 
 import java.awt.*;
+import java.util.ArrayList;
 
 //This interface unites static with dynamic objects on grid.
 public interface GridObject {
@@ -15,8 +16,8 @@ public interface GridObject {
     Point getIntention();
     void setIntention(Behaviour aDefault);
     void move();
-    void lookForObstacles();
-    void manageCollisions();
+    ArrayList<GridObject> lookForObstacles();
+    boolean manageCollisions();
     Zone getFinishZone();
     boolean isDead();
     void setIsDead(boolean flag);

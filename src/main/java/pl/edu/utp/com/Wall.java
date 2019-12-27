@@ -5,6 +5,8 @@ import pl.edu.utp.gui.Zone;
 import pl.edu.utp.util.Behaviour;
 
 import java.awt.*;
+import java.util.ArrayList;
+
 //This class implements static objects with constant position on grid
 public class Wall implements GridObject {
     private String type;
@@ -52,15 +54,17 @@ public class Wall implements GridObject {
     }
 
     @Override
-    public void lookForObstacles() {
+    public ArrayList<GridObject> lookForObstacles() {
         //Static obstacle
         //Stones has no intentions
+        return new ArrayList<>();
     }
 
     @Override
-    public void manageCollisions() {
+    public boolean manageCollisions() {
         //Static obstacle
         //Stones has no intentions
+        return false;
     }
 
     @Override

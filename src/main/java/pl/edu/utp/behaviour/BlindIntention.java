@@ -5,8 +5,8 @@ import pl.edu.utp.gui.Point;
 
 public class BlindIntention implements Intention {
     public Point setIntention(GridObject obj) {
-        for(Point p : obj.getFinishZone().getField()){
-            if(p.getX() == obj.getPos().getX() && p.getY() == obj.getPos().getY()) return new Point();
+        for (Point p : obj.getFinishZone().getField()) {
+            if (p.getX() == obj.getPos().getX() && p.getY() == obj.getPos().getY()) return new Point();
         }
         Point diff = new Point(obj.getFinishZone().getCenterPoint().getX() - obj.getPos().getX(),
                 obj.getFinishZone().getCenterPoint().getY() - obj.getPos().getY());
@@ -26,9 +26,11 @@ public class BlindIntention implements Intention {
             ratio = (double) diff.getX() / (double) diff.getY();
             if (Math.abs(ratio) < trigger) x = 0;
         }
+
         if (obj.getPos().getX() == obj.getFinishZone().getCenterPoint().getX()
                 && obj.getPos().getY() == obj.getFinishZone().getCenterPoint().getY()) {
-            return new Point(0, 0);
+            x = 0;
+            y = 0;
         }
         return new Point(x, y);
     }
