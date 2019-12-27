@@ -12,7 +12,6 @@ import java.awt.*;
 import java.util.ArrayList;
 import java.util.Random;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 
 //This class implements Drones and their behaviour
 public class Drone implements GridObject {
@@ -21,23 +20,21 @@ public class Drone implements GridObject {
 
     private Intention behaviour = defaultBehaviour;
 
-    private String type = "drone";
     private boolean isDead = false;
     private ArrayList<GridObject> obstaclesInRange = new ArrayList<>();
-    private int range = 2;
     private String getNr;
     private Color col;
     private Point pos;
     private Point intention = new Point();
     private Zone finishZone;
     private EntitiesSingleton s = EntitiesSingleton.getInstance();
-    private static final Logger LOGGER = Logger.getLogger(Drone.class.getName());
 
     public void move() {
         this.pos = new Point(getPos().getX() + intention.getX(), getPos().getY() + intention.getY());
     }
 
     public ArrayList<GridObject> lookForObstacles() {
+        int range = 2;
         int x1 = pos.getX() - range;
         int x2 = pos.getX() + range;
         int y1 = pos.getY() - range;
@@ -136,7 +133,7 @@ public class Drone implements GridObject {
     }
 
     public String getType() {
-        return type;
+        return "drone";
     }
 
     public Color getCol() {

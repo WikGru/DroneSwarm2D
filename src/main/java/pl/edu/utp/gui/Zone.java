@@ -47,16 +47,6 @@ public class Zone {
         center = new Point(x / field.size(), y / field.size());
     }
 
-    public void removePoint(Point p) {
-        for (Point point : field) {
-            if (point.getX() == p.getX() && point.getY() == p.getY()) {
-                field.remove(point);
-                calculateCenter();
-                return;
-            }
-        }
-    }
-
     public Point getCenterPoint() {
         return center;
     }

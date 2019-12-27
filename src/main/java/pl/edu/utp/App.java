@@ -17,16 +17,11 @@ import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
-import java.awt.event.ActionListener;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Scanner;
-import java.util.Timer;
-import java.util.TimerTask;
 import java.util.logging.*;
 import java.util.stream.Collectors;
-
-//TODO: wiecej implementacji intencji (klasa przygotowana, napisz tylko to unikanie)
 
 //This is the main App class used to run the simulation
 public class App extends Component {

@@ -82,8 +82,4 @@ public class Wall implements GridObject {
     public void setIsDead(boolean flag) {
         // Wall is always alive therefore no setting here
     }
-
-    public void setPos(Point pos) {
-        this.pos = pos;
-    }
 }
