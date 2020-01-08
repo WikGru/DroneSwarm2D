@@ -2,6 +2,9 @@ package pl.edu.utp.behaviour;
 
 import pl.edu.utp.com.GridObject;
 import pl.edu.utp.gui.Point;
+import pl.edu.utp.util.MyLogger;
+
+import java.util.logging.Level;
 
 public class AvoidingIntention implements Intention {
     public Point setIntention(GridObject obj) {
@@ -43,7 +46,7 @@ public class AvoidingIntention implements Intention {
             }
         }
 
-        System.out.println(obj.getNr() + "\tAVOIDING" + "\t[" + x + ",\t" + y + "]");
+        MyLogger.log(Level.INFO,"Drone nr" + obj.getNr() + "\tavoiding by moving to" + "\t[" + x + ",\t" + y + "]");
         return new Point(x, y);
     }
 
