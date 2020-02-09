@@ -1,7 +1,7 @@
 package pl.edu.utp.behaviour;
 
 import pl.edu.utp.com.GridObject;
-import pl.edu.utp.gui.Point;
+import pl.edu.utp.com.Point;
 import pl.edu.utp.util.MyLogger;
 
 import java.util.logging.Level;

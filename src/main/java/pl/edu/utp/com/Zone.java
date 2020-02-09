@@ -1,4 +1,4 @@
-package pl.edu.utp.gui;
+package pl.edu.utp.com;
 
 import java.util.ArrayList;
 

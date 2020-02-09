@@ -1,4 +1,4 @@
-package pl.edu.utp.gui;
+package pl.edu.utp.com;
 
 public class Point {
     private int x;

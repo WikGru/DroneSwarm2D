@@ -8,9 +8,9 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 import pl.edu.utp.gui.ButtonRenderer;
 import pl.edu.utp.gui.Cell;
-import pl.edu.utp.gui.Point;
-import pl.edu.utp.gui.Zone;
-import pl.edu.utp.util.Behaviour;
+import pl.edu.utp.com.Point;
+import pl.edu.utp.com.Zone;
+import pl.edu.utp.behaviour.Behaviour;
 import pl.edu.utp.util.MyLogger;
 
 import javax.swing.*;
@@ -96,7 +96,7 @@ public class App extends Component {
 
     private void loadConfig() {
         String configInput = "config.json";
-        try (Scanner myScanner = new Scanner(new File(configInput));) {
+        try (Scanner myScanner = new Scanner(new File(configInput))) {
             String myJson = myScanner.useDelimiter("\\Z").next();
             JSONObject obj = new JSONObject(myJson);
             gridSize = obj.getInt("gridSize");

@@ -1,4 +1,4 @@
-package pl.edu.utp.util;
+package pl.edu.utp.behaviour;
 
 public enum Behaviour {
     DEFAULT,

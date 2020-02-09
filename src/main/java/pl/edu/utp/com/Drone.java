@@ -1,11 +1,9 @@
 package pl.edu.utp.com;
 
 import pl.edu.utp.behaviour.AvoidingIntention;
+import pl.edu.utp.behaviour.Behaviour;
 import pl.edu.utp.behaviour.BlindIntention;
 import pl.edu.utp.behaviour.Intention;
-import pl.edu.utp.gui.Point;
-import pl.edu.utp.gui.Zone;
-import pl.edu.utp.util.Behaviour;
 import pl.edu.utp.util.MyLogger;
 
 import java.awt.*;
