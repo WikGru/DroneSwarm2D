@@ -261,7 +261,7 @@ public class App extends Component {
 
     //Handling next step
     private void nextStep() {
-        MyLogger.log(Level.INFO, "Step nr: " + stepNr);
+        MyLogger.log(Level.INFO, "Start of step nr: " + stepNr);
 
         clearGrid();
         manageCollisions();

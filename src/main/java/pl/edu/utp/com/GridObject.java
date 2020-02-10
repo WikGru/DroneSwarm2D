@@ -12,11 +12,11 @@ public interface GridObject {
     Color getCol();
     Point getPos();
     Point getIntention();
-    void setIntention(Behaviour aDefault);
-    void move();
-    ArrayList<GridObject> lookForObstacles();
-    boolean manageCollisions();
     Zone getFinishZone();
     boolean isDead();
+    void setIntention(Behaviour aDefault);
     void setIsDead(boolean flag);
+    ArrayList<GridObject> lookForObstacles();
+    boolean manageCollisions();
+    void move();
 }
