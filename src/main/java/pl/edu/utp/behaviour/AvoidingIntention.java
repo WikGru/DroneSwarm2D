@@ -36,7 +36,7 @@ public class AvoidingIntention implements Intention {
             if (tempIntention.getY() != 0 && tempIntention.getX() != 0) {
                 x = tempIntention.getY();
                 y = 0;
-                if(!verifyIntention(obj, new Point(x,y))){
+                if (!verifyIntention(obj, new Point(x, y))) {
                     x = 0;
                     y = tempIntention.getX();
                 }
@@ -46,7 +46,12 @@ public class AvoidingIntention implements Intention {
             }
         }
 
-        MyLogger.log(Level.INFO,"Drone nr" + obj.getNr() + "\tavoiding by moving to" + "\t[" + x + ",\t" + y + "]");
+        if (!verifyIntention(obj, new Point(x, y))) {
+            x = 0;
+            y = 0;
+        }
+
+        MyLogger.log(Level.INFO, "Drone nr" + obj.getNr() + "\tavoiding by moving to" + "\t[" + x + ",\t" + y + "]");
         return new Point(x, y);
     }
 

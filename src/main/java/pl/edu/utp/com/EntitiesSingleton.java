@@ -16,10 +16,6 @@ public class EntitiesSingleton {
         return entitiesList;
     }
 
-    public void setEntitiesList(ArrayList<GridObject> entitiesList) {
-        this.entitiesList = entitiesList;
-    }
-
     public void addEntityToList(GridObject entity){
         this.entitiesList.add(entity);
     }

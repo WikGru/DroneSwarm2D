@@ -99,24 +99,27 @@ public class App extends Component {
         try (Scanner myScanner = new Scanner(new File(configInput))) {
             String myJson = myScanner.useDelimiter("\\Z").next();
             JSONObject obj = new JSONObject(myJson);
-            gridSize = obj.getInt("gridSize");
+            try {
+                gridSize = obj.getInt("gridSize");
+                if (gridSize < 1) {
+                    MyLogger.log(Level.WARNING, "gridSize lower than 1.");
+                    gridSize = 15;
+                    MyLogger.log(Level.WARNING, "gridSize set 15.");
+                }
+            } catch (Exception e) {
+                MyLogger.log(Level.WARNING, e.getMessage());
+                gridSize = 15;
+            }
         } catch (Exception e) {
-            MyLogger.log(Level.WARNING, "Loading config failed.");
             MyLogger.log(Level.WARNING, e.getMessage());
+            MyLogger.log(Level.WARNING, "Loading config failed.");
         }
     }
 
     private void loadScenario() {
-        resetGrid();
         entitiesSingleton.clearEntitiesList();
-        try {
-            loadDrones();
-            loadObstacles();
-        } catch (Exception e) {
-            MyLogger.log(Level.WARNING, "Encountered problem while loading scenario.");
-            MyLogger.log(Level.WARNING, e.getMessage());
-            resetGrid();
-        }
+        loadDrones();
+        loadObstacles();
     }
 
     private void loadDrones() {
@@ -149,8 +152,8 @@ public class App extends Component {
             drawEntities();
         } catch (Exception e) {
             entitiesSingleton.clearEntitiesList();
-            MyLogger.log(Level.WARNING, "Execution of loadDrones failed.");
             MyLogger.log(Level.WARNING, e.getMessage());
+            MyLogger.log(Level.WARNING, "Execution of loadDrones failed.");
         }
     }
 
@@ -167,8 +170,8 @@ public class App extends Component {
             }
         } catch (Exception e) {
             entitiesSingleton.clearEntitiesList();
-            MyLogger.log(Level.WARNING, "Encountered problem while loading obstacles.");
             MyLogger.log(Level.WARNING, e.getMessage());
+            MyLogger.log(Level.WARNING, "Execution of loadObstacles failed.");
         }
     }
 

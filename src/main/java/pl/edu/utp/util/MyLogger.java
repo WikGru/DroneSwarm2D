@@ -27,8 +27,17 @@ public class MyLogger {
             LOGGER = Logger.getLogger(MyLogger.class.getName());
             String myJson = myScanner.useDelimiter("\\Z").next();
             JSONObject obj = new JSONObject(myJson);
-            String logDir = obj.getString("logDir");
-            if (Files.notExists(Paths.get(logDir))) logDir = System.getProperty("user.home");
+            String logDir = "";
+            try {
+                logDir = obj.getString("logDir");
+            } catch (Exception e) {
+                logDir = System.getProperty("user.home");
+                LOGGER.log(Level.WARNING, e.getMessage());
+            }
+            if (Files.notExists(Paths.get(logDir))) {
+                logDir = System.getProperty("user.home");
+                LOGGER.log(Level.WARNING, "logDir does not exist");
+            }
             logDir += "/log_" + String.valueOf(new Timestamp(System.currentTimeMillis())).replaceAll("[:;.]", "").replace(' ', '_') + ".txt";
             try {
                 fileHandler = new FileHandler(logDir);

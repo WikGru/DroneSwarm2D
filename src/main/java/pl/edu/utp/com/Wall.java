@@ -8,15 +8,14 @@ import java.util.ArrayList;
 //This class implements static objects with constant position on grid
 public class Wall implements GridObject {
     private String type;
-    private Color col;
-    private Point pos;
+    private Color color;
+    private Point position;
 
     public Wall(Point pos) {
         this.type = "wall";
-        this.col = Color.DARK_GRAY;
-        this.pos = pos;
+        this.color = Color.DARK_GRAY;
+        this.position = pos;
     }
-
 
     public String getType() {
         return type;
@@ -27,56 +26,48 @@ public class Wall implements GridObject {
     }
 
     public Color getCol() {
-        return col;
+        return color;
     }
 
     public Point getPos() {
-        return pos;
+        return position;
     }
 
-    @Override
     public Point getIntention() {
         return new Point(0,0);
     }
 
-    @Override
     public void setIntention(Behaviour aDefault) {
         //Static obstacle
         //Stones has no intentions
     }
 
-    @Override
     public void move() {
         //Static obstacle
         //Stones has no intentions
     }
 
-    @Override
     public ArrayList<GridObject> lookForObstacles() {
         //Static obstacle
         //Stones has no intentions
         return new ArrayList<>();
     }
 
-    @Override
     public boolean manageCollisions() {
         //Static obstacle
         //Stones has no intentions
         return false;
     }
 
-    @Override
     public Zone getFinishZone() {
         return new Zone(getPos(),getPos());
     }
 
-    @Override
     public boolean isDead() {
         // Wall cannot be dead
         return false;
     }
 
-    @Override
     public void setIsDead(boolean flag) {
         // Wall is always alive therefore no setting here
     }

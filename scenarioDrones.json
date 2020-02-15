@@ -4,174 +4,23 @@
     "color": "#baae00",
     "startingZone": {
       "begin": {
-        "x": 0,
-        "y": 0
-      },
-      "end": {
-        "x": 0,
-        "y": 0
-      }
-    },
-    "finishZone": {
-      "begin": {
-        "x": 3,
-        "y": 4
+        "x": 1,
+        "y": 1
       },
       "end": {
         "x": 3,
-        "y": 4
-      }
-    }
-  },
-
-  {
-    "id": "12",
-    "color": "#69641f",
-    "startingZone": {
-      "begin": {
-        "x": 3,
-        "y": 0
-      },
-      "end": {
-        "x": 3,
-        "y": 0
-      }
-    },
-    "finishZone": {
-      "begin": {
-        "x": 0,
-        "y": 4
-      },
-      "end": {
-        "x": 0,
-        "y": 4
-      }
-    }
-  },
-
-  {
-    "id": "21",
-    "color": "#005f9e",
-    "startingZone": {
-      "begin": {
-        "x": 5,
-        "y": 1
-      },
-      "end": {
-        "x": 5,
-        "y": 1
-      }
-    },
-    "finishZone": {
-      "begin": {
-        "x": 10,
-        "y": 1
-      },
-      "end": {
-        "x": 10,
-        "y": 1
-      }
-    }
-  },
-
-  {
-    "id": "22",
-    "color": "#3e8dc2",
-    "startingZone": {
-      "begin": {
-        "x": 10,
-        "y": 1
-      },
-      "end": {
-        "x": 10,
-        "y": 1
+        "y": 3
       }
     },
     "finishZone": {
       "begin": {
         "x": 5,
-        "y": 1
+        "y": 5
       },
       "end": {
-        "x": 5,
-        "y": 1
-      }
-    }
-  },
-
-  {
-    "id": "31",
-    "color": "#ae3ec2",
-    "startingZone": {
-      "begin": {
-        "x": 1,
-        "y": 10
-      },
-      "end": {
-        "x": 1,
-        "y": 10
-      }
-    },
-    "finishZone": {
-      "begin": {
-        "x": 5,
-        "y": 10
-      },
-      "end": {
-        "x": 5,
-        "y": 10
-      }
-    }
-  },
-
-  {
-    "id": "32",
-    "color": "#7e0194",
-    "startingZone": {
-      "begin": {
-        "x": 5,
-        "y": 10
-      },
-      "end": {
-        "x": 5,
-        "y": 10
-      }
-    },
-    "finishZone": {
-      "begin": {
-        "x": 1,
-        "y": 10
-      },
-      "end": {
-        "x": 1,
-        "y": 10
-      }
-    }
-  },
-
-  {
-    "id": "4",
-    "color": "#039405",
-    "startingZone": {
-      "begin": {
-        "x": 6,
-        "y": 9
-      },
-      "end": {
-        "x": 6,
-        "y": 9
-      }
-    },
-    "finishZone": {
-      "begin": {
-        "x": 11,
+        "x": 7,
         "y": 7
-      },
-      "end": {
-        "x": 12,
-        "y": 11
       }
     }
   }
-
 ]

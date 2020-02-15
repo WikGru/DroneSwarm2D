@@ -31,7 +31,7 @@ public class Drone implements GridObject {
         this.color = col;
         Random rand = new Random();
         if (initZone.getField().size() == 1) this.position = initZone.getField().get(0);
-        else this.position = initZone.getField().get(rand.nextInt() % initZone.getField().size() - 1);
+        else this.position = initZone.getField().get(rand.nextInt(initZone.getField().size() - 1));
         this.finishZone = finishZone;
     }
 
