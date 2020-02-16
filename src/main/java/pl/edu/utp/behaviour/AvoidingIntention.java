@@ -51,7 +51,9 @@ public class AvoidingIntention implements Intention {
             y = 0;
         }
 
-        MyLogger.log(Level.INFO, "Drone nr" + obj.getNr() + "\tavoiding by moving to" + "\t[" + x + ",\t" + y + "]");
+        if (tempIntention.getX() != x || tempIntention.getY() != y) {
+            MyLogger.log(Level.INFO, "Drone" + obj.getNr() + " avoiding by changing direction from [" + tempIntention.getX() + ", " + tempIntention.getY() + "] to direction [" + x + ", " + y + "]");
+        }
         return new Point(x, y);
     }
 

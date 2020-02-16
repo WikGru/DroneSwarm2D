@@ -36,7 +36,9 @@ public class Drone implements GridObject {
     }
 
     public void move() {
-        this.position = new Point(getPos().getX() + intention.getX(), getPos().getY() + intention.getY());
+        Point newPos = new Point(getPos().getX() + intention.getX(), getPos().getY() + intention.getY());
+        MyLogger.log(Level.INFO, "Drone" + this.id + " moved from [" + this.position.getX() + ", " + this.position.getY() + "] to [" + newPos.getX() + ", " + newPos.getY() + "].");
+        this.position = newPos;
     }
 
     public ArrayList<GridObject> lookForObstacles() {
@@ -57,8 +59,9 @@ public class Drone implements GridObject {
                 log.append("[").append(obstacle.getPos().getX()).append(", ").append(obstacle.getPos().getY()).append("] ");
             }
         }
-        MyLogger.log(Level.INFO, "Objects in sight of drone nr" + this.id + ": " + log);
-
+        if (log.length() > 1) {
+            MyLogger.log(Level.INFO, "Drone" + this.id + " on position [" + this.position.getX() + ", " + this.position.getY() + "] has objects in sight on: " + log);
+        }
         return obstaclesInRange;
     }
 
@@ -85,9 +88,8 @@ public class Drone implements GridObject {
                     objPosAfterMove.getY() == myPosAfterMove.getY()) {
                 isDead = true;
                 if (obj.getType().equals("drone")) obj.setIsDead(true);
-                MyLogger.log(Level.INFO, "Same spot collision drone nr " + this.id + ": ["
-                        + myPosAfterMove.getX() + ", " + myPosAfterMove.getY() + "]\t["
-                        + objPosAfterMove.getX() + ", " + objPosAfterMove.getY() + "]");
+                MyLogger.log(Level.INFO, "Same spot collision drone" + this.id + " with drone" + obj.getNr() + " on position ["
+                        + myPosAfterMove.getX() + ", " + myPosAfterMove.getY() + "]");
                 return true;
             }
 
@@ -105,7 +107,7 @@ public class Drone implements GridObject {
                 if (Math.abs(obj.getPos().getY() - position.getY()) == 1) {
                     if (obj.getIntention().getY() * -1 == getIntention().getY() &&
                             getIntention().getY() != 0 && obj.getIntention().getY() != 0) {
-                        handleCrossMidAirCollision(obj, objPosAfterMove, myPosAfterMove);
+                        handleCrossMidAirCollision(myPosAfterMove);
                         return true;
                     }
                 }
@@ -113,7 +115,7 @@ public class Drone implements GridObject {
                 if (Math.abs(obj.getPos().getX() - position.getX()) == 1) {
                     if (obj.getIntention().getX() * -1 == getIntention().getX() &&
                             getIntention().getX() != 0 && obj.getIntention().getX() != 0) {
-                        handleCrossMidAirCollision(obj, objPosAfterMove, myPosAfterMove);
+                        handleCrossMidAirCollision(myPosAfterMove);
                         return true;
                     }
                 }
@@ -122,12 +124,10 @@ public class Drone implements GridObject {
         return false;
     }
 
-    private void handleCrossMidAirCollision(GridObject obj, Point objPosAfterMove, Point myPosAfterMove) {
-        MyLogger.log(Level.INFO, "Crossed mid-air drone nr " + this.id + " & nr " + obj.getNr() + ". Attempted movements: ["
-                + this.getPos().getX() + ", " + this.getPos().getY() + "] -> [" + +myPosAfterMove.getX() + ", " + myPosAfterMove.getY() + "]  &  ["
-                + obj.getPos().getX() + ", " + obj.getPos().getY() + "] -> [" + +objPosAfterMove.getX() + ", " + objPosAfterMove.getY() + "].");
+    private void handleCrossMidAirCollision(Point myPosAfterMove) {
+        MyLogger.log(Level.INFO, "Mid-air collision drone" + this.id + ". Attempted move from ["
+                + this.getPos().getX() + ", " + this.getPos().getY() + "] to [" + +myPosAfterMove.getX() + ", " + myPosAfterMove.getY() + "].");
         isDead = true;
-        if (obj.getType().equals("drone")) obj.setIsDead(true);
     }
 
     public String getType() {

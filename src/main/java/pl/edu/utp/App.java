@@ -238,7 +238,6 @@ public class App extends Component {
 
     private void manageCollisions() {
         //Manage drone collisions
-        entitiesSingleton.getEntitiesList().forEach(GridObject::lookForObstacles);
         Behaviour behaviour;
         if (blindIntentionRbtn.isSelected()) {
             behaviour = Behaviour.DEFAULT;
@@ -270,6 +269,7 @@ public class App extends Component {
         manageCollisions();
         moveDrones();
         drawEntities();
+        entitiesSingleton.getEntitiesList().forEach(GridObject::lookForObstacles);
 
         MyLogger.log(Level.INFO, "End of step nr: " + stepNr++);
     }
